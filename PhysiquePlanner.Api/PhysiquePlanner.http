@@ -1,0 +1,6 @@
+@PhysiquePlanner_HostAddress = http://localhost:5195
+
+GET {{PhysiquePlanner_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

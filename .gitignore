@@ -1,0 +1,46 @@
+# =====================
+# 🔹 Node / React Frontend
+# =====================
+node_modules/
+**/node_modules/
+dist/
+build/
+.env
+.env.*.local
+.vite/
+
+# =====================
+# 🔸 Visual Studio / .NET Backend
+# =====================
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.dbmdl
+*.pdb
+*.cache
+*.log
+*.bak
+
+bin/
+obj/
+TestResults/
+*.dll
+*.exe
+
+# =====================
+# 🔸 System / Misc
+# =====================
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
+*.orig
+.idea/
+.vscode/
+*.log
+
+# Ignore coverage and debugging
+coverage/
+*.tgz

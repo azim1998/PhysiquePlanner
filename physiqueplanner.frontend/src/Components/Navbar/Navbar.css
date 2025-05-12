@@ -1,0 +1,35 @@
+.navbar {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.2% 5%;
+}
+
+.link {
+    font-size: larger;
+    color: white;
+    margin: 10px;
+    text-decoration: none;
+    background-color: #1a63d1;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px 0px darkgrey;
+    transition: background-color 0.3s, 
+}
+
+.login-link {
+    margin-left: auto;
+}
+
+.link:hover {
+    background-color: rgb(31, 63, 167);
+    box-shadow: 3px 3px 5px 0px darkgrey;
+}
+
+
+.logo {
+    border-radius: 8px;
+    width: 5%;
+    margin: 5px 50px 5px 5px;
+}

@@ -1,0 +1,8 @@
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 equal-width columns */
+    gap: 1px; /* Adds space between the cards */
+    justify-items: center; /* Centers the cards horizontally */
+    padding: 20px;
+    max-width: 100%;
+  }

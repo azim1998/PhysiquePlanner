@@ -41,7 +41,7 @@ const ExercisesPage = (props: Props) => {
   };
 
   return (
-    <div>
+    <div className="mx-30 mt-10">
       <h1 className="text-center text-5xl font-semibold py-4">Exercises</h1>
       <Search searchExercise={onSearchSubmit} />
       <div className="card-container">

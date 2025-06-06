@@ -3,29 +3,42 @@ import { useParams } from "react-router";
 import { GetExerciseByIdAPI } from "../../Services/Exercises/ExerciseService";
 import { Exercise } from "../../Services/Exercises/Exercies";
 import { toast } from "react-toastify";
+import exerciseImage from "../../Assets/dumbbell.png"
 
 interface Props {}
 
 const IndividualExercisePage = (props: Props) => {
-  const { exerciseId } = useParams()
-  const [exercise, setExercise] = useState<Exercise>()
+  const { exerciseId } = useParams();
+  const [exercise, setExercise] = useState<Exercise>();
 
   useEffect(() => {
-    console.log("exerciseId:",{exerciseId})
+    console.log("exerciseId:", { exerciseId });
     GetExerciseByIdAPI(exerciseId!)
-    .then((response) => {
+      .then((response) => {
         if (response) {
-            setExercise(response.data);
+          setExercise(response.data);
         } else {
-            toast("Exercise could not be found");
+          toast("Exercise could not be found");
         }
-    })
-    .catch((e) => {
-        toast.warn("Failed to get exercise")
-    })
-  },[])
+      })
+      .catch((e) => {
+        toast.warn("Failed to get exercise");
+      });
+  }, []);
 
-  return <div>{exercise?.name}</div>;
+  return (
+    <div className="mx-30 mt-10">
+      <h1 className="font-bold text-4xl pb-2">{exercise?.name}</h1>
+      <div className="flex items-start">
+        {exercise?.muscles.map((muscle) => (
+          <p className="text-lg border-transparent rounded-xl px-1 bg-gray-200 ">{muscle.name}</p>
+        ))}
+      </div>
+      <h1 className="pt-4 text-2xl italic">Description</h1>
+      <p className="text-lg">{exercise?.description}</p>
+      <img className="w-1/2 border-2 rounded-3xl p-4 shadow-lg shadow-indigo-500/40" src={exerciseImage} alt="exercise"></img>
+    </div>
+  );
 };
 
 export default IndividualExercisePage;

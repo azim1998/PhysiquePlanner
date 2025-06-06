@@ -16,7 +16,7 @@ export const GetAllExercisesAPI = async () => {
 
 export const GetExerciseByIdAPI = async (exerciseId: string) => {
   try {
-    const response = await axios.get<Exercise[]>(`${apiUrl}/${exerciseId}`);
+    const response = await axios.get<Exercise>(`${apiUrl}/${exerciseId}`);
     return response;
   } catch (error) {
     HandleError(error);

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using PhysiquePlanner.Api.Dtos.ExerciseDtos;
+using PhysiquePlanner.Models;
 using PhysiquePlanner.Repositories.Interfaces;
 
 namespace PhysiquePlanner.Controllers
@@ -29,7 +30,7 @@ namespace PhysiquePlanner.Controllers
             return Ok(exercisesDto);
         }
 
-        [HttpGet("{exerciseId}")]
+        [HttpGet("{exerciseId:int}")]
         public async Task<IActionResult> GetExercise([FromRoute] int exerciseId)
         {
             if (!ModelState.IsValid)
@@ -43,6 +44,22 @@ namespace PhysiquePlanner.Controllers
             var exerciseDto = _mapper.Map<ExerciseDto>(exercise);
 
             return Ok(exerciseDto);
+        }
+
+        [HttpGet("{exerciseName:alpha}")]
+        public async Task<IActionResult> GetExercisesByName([FromRoute] string exerciseName)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var exercises = await _exerciseRepository.GetExercisesByName(exerciseName);
+
+            if (exercises == null)
+                return NotFound();
+
+            var exercisesDto = _mapper.Map<ICollection<Exercise>>(exercises);
+
+            return Ok(exercisesDto);
         }
 
     }

@@ -6,5 +6,6 @@ namespace PhysiquePlanner.Repositories.Interfaces
     {
         Task<ICollection<Exercise>> GetAllExercisesAsync();
         Task<Exercise> GetExerciseByIdAsync(int exerciseId);
+        Task<ICollection<Exercise>> GetExercisesByName(string exerciseName);
     }
 }

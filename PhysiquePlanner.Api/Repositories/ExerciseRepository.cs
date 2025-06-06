@@ -29,5 +29,10 @@ namespace PhysiquePlanner.Repositories
             return exercise;
 
         }
+
+        public async Task<ICollection<Exercise>> GetExercisesByName(string exerciseName)
+        {
+            return await _applicationDbContext.Exercises.Where(e => e.Name.Contains(exerciseName)).ToListAsync();
+        }
     }
 }

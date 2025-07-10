@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { GetExerciseByIdAPI } from "../../Services/Exercises/ExerciseService";
-import { Exercise } from "../../Services/Exercises/Exercies";
+import { GetExerciseByIdAPI } from "../../Services/ExerciseService";
+import { Exercise } from "../../Models/Exercies";
 import { toast } from "react-toastify";
 import exerciseImage from "../../Assets/dumbbell.png"
 

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import exerciseImage from "../../Assets/dumbbell.png";
-import { Exercise } from "../../Services/Exercises/Exercies";
+import { Exercise } from "../../Models/Exercies";
 import "./Card.css";
 
 interface Props {

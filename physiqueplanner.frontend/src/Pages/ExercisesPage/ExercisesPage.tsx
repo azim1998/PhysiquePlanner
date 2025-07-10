@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import {
   GetAllExercisesAPI,
   GetExercisesByNameAPI,
-} from "../../Services/Exercises/ExerciseService";
-import { Exercise } from "../../Services/Exercises/Exercies";
+} from "../../Services/ExerciseService";
+import { Exercise } from "../../Models/Exercies";
 import { toast } from "react-toastify";
 import Card from "../../Components/Card/Card";
 import "./ExercisesPage.css";

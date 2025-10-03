@@ -36,6 +36,22 @@ namespace PhysiquePlanner.Api.Controllers
             return Ok(workoutsDto);
         }
 
+        [HttpGet("{workoutName:alpha}")]
+        public async Task<IActionResult> GetPublicWorkoutByName([FromRoute] string workoutName)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var workouts = await _workoutRepository.GetPublicWorkoutByNameAsync(workoutName);
+
+            if (workouts == null)
+                return NotFound("No workouts found");
+
+            var workoutsDto = _mapper.Map<ICollection<WorkoutDto>>(workouts);
+
+            return Ok(workoutsDto);
+        }
+
         [Authorize]
         [HttpGet("userWorkouts")]
         public async Task<IActionResult> GetUserWorkouts()
@@ -57,8 +73,7 @@ namespace PhysiquePlanner.Api.Controllers
             return Ok(userWorkoutsDto);
         }
 
-
-        [HttpGet("{workoutId}")]
+        [HttpGet("{workoutId:int}")]
         public async Task<IActionResult> GetWorkout([FromRoute] int workoutId)
         {
             if (!ModelState.IsValid)

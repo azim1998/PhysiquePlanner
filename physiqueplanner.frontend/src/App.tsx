@@ -7,15 +7,19 @@ import { Outlet } from "react-router";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthProvider } from "./Context/AuthContext";
+import '@mantine/core/styles.css';
+import { MantineProvider } from "@mantine/core";
 
 function App() {
   return (
     <>
-      <AuthProvider>
-        <Navbar />
-        <Outlet />
-        <ToastContainer />
-      </AuthProvider>
+      <MantineProvider>
+        <AuthProvider>
+          <Navbar />
+          <Outlet />
+          <ToastContainer />
+        </AuthProvider>
+      </MantineProvider>
     </>
   );
 }

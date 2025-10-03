@@ -40,6 +40,15 @@ export const CreateWorkoutAPI = async (data: WorkoutUpdateCreationDto) => {
   }
 };
 
+export const GetWorkoutsByNameAPI = async (workoutName: string) => {
+  try {
+    const response = axios.get<Workout[]>(`${apiUrl}/${workoutName}`);
+    return response;
+  } catch (error) {
+    HandleError(error);
+  }
+};
+
 export const UpdateWorkoutAPI = async (
   workoutId: string,
   data: WorkoutUpdateCreationDto

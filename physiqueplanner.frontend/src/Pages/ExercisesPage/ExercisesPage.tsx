@@ -43,10 +43,12 @@ const ExercisesPage = (props: Props) => {
   return (
     <div className="mx-30 mt-10">
       <h1 className="text-center text-5xl font-semibold py-4">Exercises</h1>
-      <Search searchExercise={onSearchSubmit} />
+      <Search onSearch={onSearchSubmit} placeholder="Search Exercise" />
       <div className="card-container">
         {exercises.length > 0 ? (
-          exercises.map((exercise) => <Card key={exercise.id} exercise={exercise} />)
+          exercises.map((exercise) => (
+            <Card key={exercise.id} exercise={exercise} />
+          ))
         ) : (
           <h1 className="text-center text-5xl font-semibold pt-4">
             No Exercises Found

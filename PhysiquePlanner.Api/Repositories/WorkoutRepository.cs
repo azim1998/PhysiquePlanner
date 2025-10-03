@@ -35,6 +35,14 @@ namespace PhysiquePlanner.Api.Repositories
                 .ToListAsync();
         }
 
+        public async Task<ICollection<Workout>> GetPublicWorkoutByNameAsync(string workoutName)
+        {
+            return await _applicationDbContext.Workouts.Where(w => w.Name.Contains(workoutName) && w.IsPrivate == false)
+                .Include(w => w.WorkoutExercises)
+                .ThenInclude(we => we.Exercise)
+                .ToListAsync();
+        }
+
         public async Task<ICollection<Workout>> GetUserWorkoutsAsync(string userId)
         {
             return await _applicationDbContext.Workouts.Where(w => w.ApplicationUserId == userId)

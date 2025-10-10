@@ -34,8 +34,8 @@ const WorkoutDetailPage = (props: Props) => {
       <p className="text-lg">{workout?.description}</p>
       <div>
         {workout?.workoutExercises.map((exercise, index) => (
-          <Card
-            key={workout.name}
+          <Card 
+            key={exercise.exerciseId}
             shadow="md"
             padding="xl"
             radius="md"

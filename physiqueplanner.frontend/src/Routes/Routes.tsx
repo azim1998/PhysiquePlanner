@@ -6,6 +6,7 @@ import LoginPage from "../Pages/LoginPage/LoginPage";
 import IndividualExercisePage from "../Pages/IndividualExercisePage/IndividualExercisePage";
 import RegisterPage from "../Pages/RegisterPage/RegisterPage";
 import WorkoutsPage from "../Pages/WorkoutsPage/WorkoutsPage";
+import WorkoutDetailPage from "../Pages/WorkoutDeatilPage/WorkoutDetailPage";
 
 export const router = createBrowserRouter([
   {
@@ -17,7 +18,8 @@ export const router = createBrowserRouter([
       { path: "exercises", element: <ExercisesPage /> },
       { path: "exercises/:exerciseId", element: <IndividualExercisePage /> },
       { path: "register", element: <RegisterPage /> },
-      { path: "workouts", element: <WorkoutsPage /> }
+      { path: "workouts", element: <WorkoutsPage /> },
+      { path: "workouts/:workoutId", element: <WorkoutDetailPage/>}
     ],
   },
 ]);

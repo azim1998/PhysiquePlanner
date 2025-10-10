@@ -2,13 +2,14 @@ import { Card, Group, Image, SimpleGrid, Switch } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import {
   GetAllPublicWorkoutsAPI,
-  GetWorkoutsByNameAPI,
+  GetPublicWorkoutsByNameAPI,
 } from "../../Services/WorkoutsService";
 import { Workout } from "../../Models/Workouts";
 import { toast } from "react-toastify";
 import exerciseImage from "../../Assets/dumbbell.png";
 import Search from "../../Components/Search/Search";
 import { Text } from "@mantine/core";
+import { Link } from "react-router-dom";
 
 interface Props {}
 
@@ -16,6 +17,7 @@ const WorkoutsPage = (props: Props) => {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
 
   useEffect(() => {
+    console.log(workouts)
     GetAllPublicWorkoutsAPI()
       .then((response) => {
         if (response?.data) {
@@ -30,7 +32,7 @@ const WorkoutsPage = (props: Props) => {
   }, []);
 
   const onSearchSubmit = (search: string) => {
-    GetWorkoutsByNameAPI(search)
+    GetPublicWorkoutsByNameAPI(search)
       .then((response) => {
         if (response?.data) {
           setWorkouts(response.data);
@@ -50,25 +52,27 @@ const WorkoutsPage = (props: Props) => {
       <SimpleGrid cols={3} className="mx-30 mt-10">
         {workouts?.length > 0 ? (
           workouts.map((workout) => (
-            <Card
-              key={workout.name}
-              shadow="md"
-              padding="xl"
-              radius="md"
-              withBorder
-              className="w-8/12"
-            >
-            <img
-                src={exerciseImage}
-                alt="workoutImage"
-                className="w-auto h-auto object-contain"
-              />
-              
-            <Text fw={500}>{workout.name}</Text>
-            <Text size="sm" c="dimmed">
-              {workout.description}
-            </Text>
-            </Card>
+            <Link to={`/workouts/${workout.id}`}>
+              <Card
+                key={workout.name}
+                shadow="md"
+                padding="xl"
+                radius="md"
+                withBorder
+                className="w-8/12"
+              >
+                <img
+                  src={exerciseImage}
+                  alt="workoutImage"
+                  className="w-auto h-auto object-contain"
+                />
+
+                <Text fw={500}>{workout.name}</Text>
+                <Text size="sm" c="dimmed">
+                  {workout.description}
+                </Text>
+              </Card>
+            </Link>
           ))
         ) : (
           <h1>No workouts found</h1>

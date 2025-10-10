@@ -22,7 +22,7 @@ export const GetUserWorkoutsAPI = async () => {
   }
 };
 
-export const GetWorkoutAPI = async (id: number) => {
+export const GetWorkoutAPI = async (id: string) => {
   try {
     const response = await axios.get<Workout>(`${apiUrl}/${id}`);
     return response;
@@ -40,7 +40,7 @@ export const CreateWorkoutAPI = async (data: WorkoutUpdateCreationDto) => {
   }
 };
 
-export const GetWorkoutsByNameAPI = async (workoutName: string) => {
+export const GetPublicWorkoutsByNameAPI = async (workoutName: string) => {
   try {
     const response = axios.get<Workout[]>(`${apiUrl}/${workoutName}`);
     return response;

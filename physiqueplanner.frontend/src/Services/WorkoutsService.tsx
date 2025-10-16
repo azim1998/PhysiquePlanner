@@ -1,5 +1,9 @@
 import axios from "axios";
-import { Workout, WorkoutUpdateCreationDto } from "../Models/Workouts";
+import {
+  AddExercisesToWorkoutDto,
+  Workout,
+  WorkoutUpdateCreationDto,
+} from "../Models/Workouts";
 import { HandleError } from "../Helpers/ErrorHandler";
 
 const apiUrl = "http://localhost:5195/api/Workouts";
@@ -64,6 +68,35 @@ export const UpdateWorkoutAPI = async (
 export const DeleteWorkoutAPI = async (workoutId: string) => {
   try {
     const response = axios.delete(`${apiUrl}/${workoutId}`);
+    return response;
+  } catch (error) {
+    HandleError(error);
+  }
+};
+
+export const AddExercisesToWorkoutApi = async (
+  workoutId: string,
+  exerciseIds: AddExercisesToWorkoutDto
+) => {
+  try {
+    const response = axios.post(
+      `${apiUrl}/${workoutId}/exercises`,
+      exerciseIds
+    );
+    return response;
+  } catch (error) {
+    HandleError(error);
+  }
+};
+
+export const RemoveExerciseFromWorkoutAPI = async (
+  workoutId: string,
+  exerciseId: string
+) => {
+  try {
+    const response = axios.delete(
+      `${apiUrl}/${workoutId}/exercises/${exerciseId}`
+    );
     return response;
   } catch (error) {
     HandleError(error);

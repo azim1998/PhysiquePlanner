@@ -1,19 +1,38 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Workout } from "../../Models/Workouts";
-import { GetWorkoutAPI } from "../../Services/WorkoutsService";
+import {
+  GetWorkoutAPI,
+  RemoveExerciseFromWorkoutAPI,
+} from "../../Services/WorkoutsService";
 import { toast } from "react-toastify";
-import { Box, Card, Grid, GridCol, Paper, Text } from "@mantine/core";
+import {
+  Button,
+  Card,
+  CloseButton,
+  Grid,
+  GridCol,
+  Text,
+  Tooltip,
+} from "@mantine/core";
 import exerciseImage from "../../Assets/dumbbell.png";
 import { Link } from "react-router-dom";
+import { useDisclosure } from "@mantine/hooks";
+import AddExerciseModal from "../../Components/AddExerciseModal/AddExerciseModal";
+import { MdDelete } from "react-icons/md";
+import RemoveItemModal from "../../Components/RemoveItemModal/RemoveItemModal";
 
 interface Props {}
 
 const WorkoutDetailPage = (props: Props) => {
   const { workoutId } = useParams<{ workoutId: string }>();
   const [workout, setWorkout] = useState<Workout>();
+  const [addExerciseModalOpened, addExerciseModalHandlers] =
+    useDisclosure(false);
+  const [removeExerciseModalOpened, removeExerciseModalHandlers] =
+    useDisclosure(false);
 
-  useEffect(() => {
+  const fetchExercises = () => {
     GetWorkoutAPI(workoutId!)
       .then((response) => {
         if (response?.data) {
@@ -26,6 +45,23 @@ const WorkoutDetailPage = (props: Props) => {
       .catch((e) => {
         toast.warn("Failed to get workout");
       });
+  };
+
+  const removeExercise = (workoutId: string, exerciseId: string) => {
+    RemoveExerciseFromWorkoutAPI(workoutId, exerciseId).then((response) => {
+      if (response?.status === 200) {
+        toast.success("Exercise successfully removed");
+        fetchExercises();
+      } else {
+        toast.warn("Exercise could not be removed");
+      }
+    });
+
+    removeExerciseModalHandlers.close();
+  };
+
+  useEffect(() => {
+    fetchExercises();
   }, []);
 
   return (
@@ -34,13 +70,13 @@ const WorkoutDetailPage = (props: Props) => {
       <p className="text-lg">{workout?.description}</p>
       <div>
         {workout?.workoutExercises.map((exercise, index) => (
-          <Card 
+          <Card
             key={exercise.exerciseId}
             shadow="md"
             padding="xl"
             radius="md"
             withBorder
-            className="w-auto"
+            className="w-auto mb-5"
           >
             <Grid gutter={30} className="flex flex-row items-center">
               <div className="flex items-center">
@@ -104,26 +140,40 @@ const WorkoutDetailPage = (props: Props) => {
                     REST
                   </Text>
                 </GridCol>
-              </div>
 
-              {/* <GridCol span="content">
-                <Paper
-                  withBorder
-                  shadow="none"
-                  radius="lg"
-                  bg="#e7e7e7"
-                  w="fit-content"
-                  px="5"
-                  py="1"
-                >
-                  <Text fw={500} size="sm">
-                    {`${exercise.sets} sets x ${exercise.reps} reps`}
-                  </Text>
-                </Paper>
-              </GridCol> */}
+                <GridCol span="content">
+                  <RemoveItemModal
+                    opened={removeExerciseModalOpened}
+                    close={removeExerciseModalHandlers.close}
+                    onItemRemoveConfirmation={() =>
+                      removeExercise(workoutId!, String(exercise.exerciseId))
+                    }
+                  />
+                  <Tooltip label="Remove Exercise" color="gray">
+                    <Button
+                      variant="subtle"
+                      color="gray"
+                      onClick={removeExerciseModalHandlers.open}
+                    >
+                      <MdDelete size={20} />
+                    </Button>
+                  </Tooltip>
+                </GridCol>
+              </div>
             </Grid>
           </Card>
         ))}
+      </div>
+      <div className="flex justify-center">
+        <AddExerciseModal
+          workoutId={workout?.id!}
+          opened={addExerciseModalOpened}
+          close={addExerciseModalHandlers.close}
+          onExerciseAdded={() => fetchExercises()}
+        />
+        <Button mt={10} onClick={addExerciseModalHandlers.open}>
+          + Add Exercise
+        </Button>
       </div>
     </div>
   );

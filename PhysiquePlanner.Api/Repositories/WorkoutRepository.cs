@@ -73,5 +73,12 @@ namespace PhysiquePlanner.Api.Repositories
 
             return workoutToDelete;
         }
+
+        public async Task RemoveExerciseFromWorkoutAsync(WorkoutExercise exerciseToRemove)
+        {
+
+            _applicationDbContext.WorkoutExercise.Remove(exerciseToRemove);
+            await _applicationDbContext.SaveChangesAsync();
+        }
     }
 }

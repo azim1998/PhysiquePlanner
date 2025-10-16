@@ -45,5 +45,45 @@ namespace PhysiquePlanner.Api.Services
             return await _workoutRepository.UpdateWorkoutAsync(workoutToUpdate);
         }
 
+        public async Task<Workout?> AddExercisesToWorkoutAsync(int workoutId, AddExercisesToWorkoutDto exerciseIds)
+        {
+            var workoutToUpdate = await _workoutRepository.GetWorkoutByIdAsync(workoutId);
+
+            if (workoutToUpdate == null)
+                return null;
+
+            foreach (var exerciseId in exerciseIds.ExerciseIds)
+            {
+                if (!workoutToUpdate.WorkoutExercises.Any(we => we.ExerciseId == exerciseId))
+                {
+                    var exerciseToAdd = new WorkoutExercise
+                    {
+                        ExerciseId = exerciseId,
+                        WorkoutId = workoutId,
+                    };
+
+                    workoutToUpdate.WorkoutExercises.Add(exerciseToAdd);
+                }
+
+            }
+
+            return await _workoutRepository.UpdateWorkoutAsync(workoutToUpdate);
+
+        }
+
+        public async Task<Workout?> RemoveExerciseFromWorkoutAsync(int workoutId, int exerciseId)
+        {
+            var workout = await _workoutRepository.GetWorkoutByIdAsync(workoutId);
+
+            if (workout == null) return null;
+
+            var workoutExerciseToRemove = workout.WorkoutExercises.Where(we => we.ExerciseId == exerciseId).FirstOrDefault();
+
+            if (workoutExerciseToRemove == null) return null;
+
+            await _workoutRepository.RemoveExerciseFromWorkoutAsync(workoutExerciseToRemove);
+
+            return workout;
+        }
     }
 }

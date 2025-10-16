@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using PhysiquePlanner.Api.Data;
 using PhysiquePlanner.Api.Models;
 using PhysiquePlanner.Models;
 
@@ -15,6 +14,7 @@ namespace PhysiquePlanner.Data
 
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<Workout> Workouts { get; set; }
+        public DbSet<WorkoutExercise> WorkoutExercise { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

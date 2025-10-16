@@ -12,5 +12,6 @@ namespace PhysiquePlanner.Api.Repositories.Interfaces
         Task<Workout> UpdateWorkoutAsync(Workout workoutToUpdate);
         Task<bool> WorkoutExistsAsync(int workoutId);
         Task<Workout> DeleteWorkoutAsync(Workout workoutToDelete);
+        Task RemoveExerciseFromWorkoutAsync(WorkoutExercise exerciseToRemove);
     }
 }

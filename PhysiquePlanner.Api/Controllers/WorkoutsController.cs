@@ -128,6 +128,21 @@ namespace PhysiquePlanner.Api.Controllers
 
         }
 
+        [HttpPost("{workoutId}/exercises")]
+        public async Task<IActionResult> AddExercisesToWorkout([FromRoute] int workoutId, [FromBody] AddExercisesToWorkoutDto exerciseIds)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var workoutUpdated = await _workoutService.AddExercisesToWorkoutAsync(workoutId, exerciseIds);
+
+            if (workoutUpdated == null)
+                return StatusCode(500, "Internal server error");
+
+            return Ok();
+
+        }
+
         [HttpDelete("{workoutId}")]
         public async Task<IActionResult> DeleteWorkout([FromRoute] int workoutId)
         {
@@ -138,6 +153,17 @@ namespace PhysiquePlanner.Api.Controllers
 
 
             var workoutDeleted = await _workoutRepository.DeleteWorkoutAsync(workoutToDelete);
+
+            if (workoutDeleted == null)
+                return StatusCode(500, "Workout could not be deleted");
+
+            return Ok();
+        }
+
+        [HttpDelete("{workoutId}/exercises/{exerciseId}")]
+        public async Task<IActionResult> RemoveExerciseFromWorkout([FromRoute] int workoutId, [FromRoute] int exerciseId)
+        {
+            var workoutDeleted = await _workoutService.RemoveExerciseFromWorkoutAsync(workoutId, exerciseId);
 
             if (workoutDeleted == null)
                 return StatusCode(500, "Workout could not be deleted");

@@ -18,3 +18,7 @@ export interface WorkoutUpdateCreationDto {
     isPrivate: boolean
     exerciseSelection: ExerciseSelectionDto[]
 }
+
+export interface AddExercisesToWorkoutDto {
+    exerciseIds: number[]
+}

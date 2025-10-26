@@ -124,7 +124,7 @@ namespace PhysiquePlanner.Api.Controllers
             if (workoutUpdated == null)
                 return StatusCode(500, "Internal server error");
 
-            return Ok();
+            return Ok(workoutUpdated);
 
         }
 

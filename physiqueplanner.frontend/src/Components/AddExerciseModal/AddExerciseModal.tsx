@@ -1,5 +1,5 @@
 import { Button, Card, Modal } from "@mantine/core";
-import IndividualExercisePage from "../../Pages/IndividualExercisePage/IndividualExercisePage";
+import IndividualExercisePage from "../../Pages/ExerciseDetailPage/ExerciseDetailPage";
 import Search from "../Search/Search";
 import {
   GetAllExercisesAPI,

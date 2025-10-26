@@ -20,7 +20,7 @@ namespace PhysiquePlanner.Mappings
                 .ForMember(dest => dest.WorkoutExercises, opt => opt.MapFrom(src => src.WorkoutExercises));
 
             CreateMap<WorkoutCreationDto, Workout>()
-                .ForMember(dest => dest.WorkoutExercises, opt => opt.MapFrom(src => src.ExerciseSelection.Select(es => new WorkoutExercise
+                .ForMember(dest => dest.WorkoutExercises, opt => opt.MapFrom(src => src.WorkoutExercises.Select(es => new WorkoutExercise
                 {
                     ExerciseId = es.ExerciseId,
                     Sets = es.Sets,
@@ -28,7 +28,7 @@ namespace PhysiquePlanner.Mappings
                 })));
 
             CreateMap<WorkoutUpdateDto, Workout>()
-                .ForMember(dest => dest.WorkoutExercises, opt => opt.MapFrom(src => src.ExerciseSelection.Select(es => new WorkoutExercise
+                .ForMember(dest => dest.WorkoutExercises, opt => opt.MapFrom(src => src.WorkoutExercises.Select(es => new WorkoutExercise
                 {
                     ExerciseId = es.ExerciseId,
                     Sets = es.Sets,

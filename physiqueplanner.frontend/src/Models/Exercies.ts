@@ -10,8 +10,3 @@ export interface Muscle {
   description: string;
 }
 
-export interface ExerciseSelectionDto {
-  exerciseId: number
-  sets: number
-  reps: number
-}

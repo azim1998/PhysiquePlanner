@@ -9,12 +9,8 @@ const Navbar = (props: Props) => {
 
   return (
     <div className="h-15 px-20 justify-center items-center border-b border-gray-600 flex items-center py-4">
-      <img src={logo} alt="logo" className="h-10 border-r pr-10" />
-      <Link
-        className="text-gray-600 text-center w-25 ml-10 border-2 rounded-lg px-3 py-1.25 transition-all duration-300 hover:bg-gradient-to-r from-slate-900 to-slate-700 hover:text-white"
-        to={"/home"}
-      >
-        Home
+      <Link to="/home">
+        <img src={logo} alt="logo" className="h-10 border-r pr-10" />
       </Link>
       <Link
         className="text-gray-600 text-center w-25 mx-3 border-2 rounded-lg px-3 py-1.25 transition-all duration-300 hover:bg-gradient-to-r from-slate-900 to-slate-700 hover:text-white"
@@ -22,7 +18,7 @@ const Navbar = (props: Props) => {
       >
         Exercises
       </Link>
-      <Link 
+      <Link
         className="text-gray-600 text-center w-25 border-2 rounded-lg px-3 py-1.25 transition-all duration-300 hover:bg-gradient-to-r from-slate-900 to-slate-700 hover:text-white"
         to={"/workouts"}
       >

@@ -8,19 +8,29 @@ interface Props {
   onItemRemoveConfirmation: () => void;
 }
 
-const RemoveExerciseModal = ({ opened, close, onItemRemoveConfirmation }: Props) => {
+const RemoveExerciseModal = ({
+  opened,
+  close,
+  onItemRemoveConfirmation,
+}: Props) => {
   return (
-    <Modal opened={opened} onClose={close} withCloseButton={false} centered>
+    <Modal
+      opened={opened}
+      onClose={close}
+      withCloseButton={false}
+      centered
+      overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}
+    >
       <h1 className="text-center font-bold">
         Are you sure you want to delete this?
       </h1>
 
       <div className="flex flex-row justify-center space-x-4 mt-5">
         <Button variant="subtle" color="gray" onClick={close}>
-            No
+          No
         </Button>
         <Button color="red" onClick={onItemRemoveConfirmation}>
-            Yes
+          Yes
         </Button>
       </div>
     </Modal>

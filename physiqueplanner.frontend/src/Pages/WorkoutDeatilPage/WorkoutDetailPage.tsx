@@ -1,18 +1,26 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { Workout } from "../../Models/Workouts";
+import {
+  ExerciseSelectionDto,
+  Workout,
+  WorkoutUpdateCreationDto,
+} from "../../Models/Workouts";
 import {
   GetWorkoutAPI,
   RemoveExerciseFromWorkoutAPI,
+  UpdateWorkoutAPI,
 } from "../../Services/WorkoutsService";
 import { toast } from "react-toastify";
 import {
   Button,
   Card,
+  Center,
   CloseButton,
   Grid,
   GridCol,
+  NumberInput,
   Text,
+  TextInput,
   Tooltip,
 } from "@mantine/core";
 import exerciseImage from "../../Assets/dumbbell.png";
@@ -21,6 +29,8 @@ import { useDisclosure } from "@mantine/hooks";
 import AddExerciseModal from "../../Components/AddExerciseModal/AddExerciseModal";
 import { MdDelete } from "react-icons/md";
 import RemoveItemModal from "../../Components/RemoveItemModal/RemoveItemModal";
+import { WorkoutExercise } from "../../Models/WorkoutExercise";
+import ExerciseInput from "../../Components/ExerciseInput/ExerciseInput";
 
 interface Props {}
 
@@ -36,7 +46,6 @@ const WorkoutDetailPage = (props: Props) => {
     GetWorkoutAPI(workoutId!)
       .then((response) => {
         if (response?.data) {
-          console.log(response.data);
           setWorkout(response.data);
         } else {
           toast.warn("No workout found");
@@ -48,7 +57,7 @@ const WorkoutDetailPage = (props: Props) => {
   };
 
   const removeExercise = (workoutId: string, exerciseId: string) => {
-    RemoveExerciseFromWorkoutAPI(workoutId, exerciseId).then((response) => {
+  RemoveExerciseFromWorkoutAPI(workoutId, exerciseId).then((response) => {
       if (response?.status === 200) {
         toast.success("Exercise successfully removed");
         fetchExercises();
@@ -60,6 +69,36 @@ const WorkoutDetailPage = (props: Props) => {
     removeExerciseModalHandlers.close();
   };
 
+  const updateWorkout = (targetExercise: WorkoutExercise) => {
+    const updatedWorkout: WorkoutUpdateCreationDto = {
+      name: workout!.name,
+      description: workout!.description,
+      isPrivate: workout!.isPrivate,
+      workoutExercises: workout!.workoutExercises.map(
+        ({ exerciseId, sets, reps }) => ({
+          exerciseId: exerciseId,
+          sets:
+            exerciseId == targetExercise.exerciseId
+              ? targetExercise.sets
+              : sets,
+          reps:
+            exerciseId == targetExercise.exerciseId
+              ? targetExercise.reps
+              : reps,
+        })
+      ),
+    };
+
+    UpdateWorkoutAPI(workoutId!, updatedWorkout).then((response) => {
+      if (response?.status === 200 && response?.data) {
+        toast.success("Workout updated successfully");
+        setWorkout(response.data);
+      } else {
+        toast.warn("Workout could not be updated");
+      }
+    });
+  };
+
   useEffect(() => {
     fetchExercises();
   }, []);
@@ -67,7 +106,7 @@ const WorkoutDetailPage = (props: Props) => {
   return (
     <div className="mx-30 mt-10">
       <h1 className="font-bold text-4xl pb-2">{workout?.name}</h1>
-      <p className="text-lg">{workout?.description}</p>
+      <p className="text-lg pb-3">{workout?.description}</p>
       <div>
         {workout?.workoutExercises.map((exercise, index) => (
           <Card
@@ -109,9 +148,12 @@ const WorkoutDetailPage = (props: Props) => {
                   span="content"
                   className="flex flex-col items-center justify-center border-r border-gray-300"
                 >
-                  <Text fw={700} size="xl">
-                    {exercise.sets}
-                  </Text>
+                  <ExerciseInput
+                    draftItem={exercise.sets}
+                    onSave={(updatedSets) =>
+                      updateWorkout({ ...exercise, sets: updatedSets })
+                    }
+                  />
                   <Text size="md" c="dimmed">
                     SETS
                   </Text>
@@ -121,9 +163,13 @@ const WorkoutDetailPage = (props: Props) => {
                   span="content"
                   className="flex flex-col items-center justify-center border-r border-gray-300"
                 >
-                  <Text fw={700} size="xl">
-                    {exercise.reps}
-                  </Text>
+                  <ExerciseInput
+                    draftItem={exercise.reps}
+                    onSave={(updatedReps) => updateWorkout({
+                      ...exercise,
+                      reps: updatedReps
+                    })}
+                  />
                   <Text size="md" c="dimmed">
                     REPS
                   </Text>

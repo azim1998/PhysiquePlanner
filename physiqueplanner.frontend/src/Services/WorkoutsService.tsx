@@ -58,6 +58,7 @@ export const UpdateWorkoutAPI = async (
   data: WorkoutUpdateCreationDto
 ) => {
   try {
+    console.log(workoutId, data);
     const response = await axios.put(`${apiUrl}/${workoutId}`, data);
     return response;
   } catch (error) {

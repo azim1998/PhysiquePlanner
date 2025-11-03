@@ -124,8 +124,26 @@ namespace PhysiquePlanner.Api.Controllers
             if (workoutUpdated == null)
                 return StatusCode(500, "Internal server error");
 
-            return Ok(workoutUpdated);
+            var workoutDto = _mapper.Map<WorkoutDto>(workoutUpdated);
 
+            return Ok(workoutDto);
+
+        }
+
+        [HttpPatch("{workoutId}")]
+        public async Task<IActionResult> PatchWorkout([FromRoute] int workoutId, [FromBody] WorkoutUpdateDto workoutUpdateDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var workoutUpdated = await _workoutService.PartiallyUpdateWorkoutAsync(workoutId, workoutUpdateDto);
+
+            if (workoutUpdated == null)
+                return StatusCode(500, "Internal server error");
+
+            var workoutDto = _mapper.Map<WorkoutDto>(workoutUpdated);
+
+            return Ok(workoutDto);
         }
 
         [HttpPost("{workoutId}/exercises")]

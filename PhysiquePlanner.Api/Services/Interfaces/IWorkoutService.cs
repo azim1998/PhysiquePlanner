@@ -7,6 +7,7 @@ namespace PhysiquePlanner.Api.Services.Interfaces
     {
         Task<Workout> CreateWorkoutAsync(WorkoutCreationDto workoutCreationDto, string userId);
         Task<Workout?> UpdateWorkoutAsync(int workoutId, WorkoutUpdateDto workoutUpdateDto);
+        Task<Workout?> PartiallyUpdateWorkoutAsync(int workoutId, WorkoutUpdateDto workoutUpdateDto);
         Task<Workout?> AddExercisesToWorkoutAsync(int workoutId, AddExercisesToWorkoutDto exerciseids);
         Task<Workout?> RemoveExerciseFromWorkoutAsync(int workoutId, int exerciseId);
     }

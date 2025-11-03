@@ -1,35 +1,63 @@
-import { Card, Group, Image, SimpleGrid, Switch } from "@mantine/core";
+import {
+  Button,
+  Card,
+  Group,
+  Image,
+  SegmentedControl,
+  SimpleGrid,
+  Switch,
+} from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import {
+  CreateWorkoutAPI,
   GetAllPublicWorkoutsAPI,
   GetPublicWorkoutsByNameAPI,
+  GetUserWorkoutsAPI,
 } from "../../Services/WorkoutsService";
-import { Workout } from "../../Models/Workouts";
+import { Workout, WorkoutCreationDto } from "../../Models/Workouts";
 import { toast } from "react-toastify";
 import exerciseImage from "../../Assets/dumbbell.png";
 import Search from "../../Components/Search/Search";
 import { Text } from "@mantine/core";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { error } from "console";
+import { useDisclosure } from "@mantine/hooks";
+import { create } from "domain";
+import CreateItemModal from "../../Components/CreateItemModal/CreateItemModal";
 
 interface Props {}
 
 const WorkoutsPage = (props: Props) => {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [view, setView] = useState<string>("public");
+  const [createWorkoutModalOpened, createWorkoutModalHandlers] = useDisclosure(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(workouts)
-    GetAllPublicWorkoutsAPI()
-      .then((response) => {
-        if (response?.data) {
-          setWorkouts(response.data);
-        } else {
-          toast.warn("No workouts found");
-        }
-      })
-      .catch((e) => {
-        toast.warn("Failed to get workouts");
-      });
-  }, []);
+    view == "public"
+      ? GetAllPublicWorkoutsAPI()
+          .then((response) => {
+            if (response?.data) {
+              setWorkouts(response.data);
+            } else {
+              toast.warn("No workouts found");
+            }
+          })
+          .catch((e) => {
+            toast.warn("Failed to get workouts");
+          })
+      : GetUserWorkoutsAPI()
+          .then((response) => {
+            if (response?.data) {
+              setWorkouts(response.data);
+            } else {
+              toast.warn("No workouts found");
+            }
+          })
+          .catch((e) => {
+            toast.warn("Failed to get workouts");
+          });
+  }, [view]);
 
   const onSearchSubmit = (search: string) => {
     GetPublicWorkoutsByNameAPI(search)
@@ -45,10 +73,53 @@ const WorkoutsPage = (props: Props) => {
       });
   };
 
+  const handleCreateWorkout = (newItem: WorkoutCreationDto) => {
+    const newWorkout: WorkoutCreationDto = {
+      name: newItem.name,
+      description: newItem.description,
+      isPrivate: newItem.isPrivate
+    }
+
+    CreateWorkoutAPI(newWorkout).then((response) => {
+      if (response?.status == 201 && response?.data) {
+        console.log(response.data)
+        toast.success("Workout Created")
+        navigate(`/workouts/${response.data.id}`)
+      } else {
+        toast.warn("Workout could not be created")
+      }
+    })
+  }
+
   return (
     <div>
-      <h1 className="text-center text-5xl font-semibold py-4">Workouts</h1>
-      <Search onSearch={onSearchSubmit} placeholder="Search Workouts" />
+      <div className="flex flex-col items-center gap-3 w-full">
+        <div className="flex items-center justify-between w-full max-w-6xl mx-auto px-4">
+          {/* Spacer div matches button width */}
+          <div className="w-36" />
+
+          <h1 className="text-5xl font-semibold text-center flex-1">
+            Workouts
+          </h1>
+
+          <Button radius="md" color="teal" onClick={() => createWorkoutModalHandlers.open()}>
+            Create Workout
+          </Button>
+
+          <CreateItemModal opened={createWorkoutModalOpened} close={createWorkoutModalHandlers.close} handleCreate={(newItem) => handleCreateWorkout(newItem)}/>
+        </div>
+        <SegmentedControl
+          value={view}
+          onChange={setView}
+          color="blue"
+          data={[
+            { label: "Public Workouts", value: "public" },
+            { label: "My Workouts", value: "mine" },
+          ]}
+        />
+
+        <Search onSearch={onSearchSubmit} placeholder="Search Workouts" />
+      </div>
       <SimpleGrid cols={3} className="mx-30 mt-10">
         {workouts?.length > 0 ? (
           workouts.map((workout) => (
@@ -59,7 +130,7 @@ const WorkoutsPage = (props: Props) => {
                 padding="xl"
                 radius="md"
                 withBorder
-                className="w-8/12"
+                className="w-8/12 h-75"
               >
                 <img
                   src={exerciseImage}

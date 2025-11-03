@@ -3,24 +3,21 @@ import { useParams } from "react-router";
 import {
   ExerciseSelectionDto,
   Workout,
-  WorkoutUpdateCreationDto,
+  WorkoutUpdateDto,
 } from "../../Models/Workouts";
 import {
   GetWorkoutAPI,
+  PartiallyUpdateWorkoutAPI,
   RemoveExerciseFromWorkoutAPI,
-  UpdateWorkoutAPI,
 } from "../../Services/WorkoutsService";
 import { toast } from "react-toastify";
 import {
   Button,
   Card,
-  Center,
-  CloseButton,
   Grid,
   GridCol,
-  NumberInput,
+  Switch,
   Text,
-  TextInput,
   Tooltip,
 } from "@mantine/core";
 import exerciseImage from "../../Assets/dumbbell.png";
@@ -31,12 +28,16 @@ import { MdDelete } from "react-icons/md";
 import RemoveItemModal from "../../Components/RemoveItemModal/RemoveItemModal";
 import { WorkoutExercise } from "../../Models/WorkoutExercise";
 import ExerciseInput from "../../Components/ExerciseInput/ExerciseInput";
+import EditableText from "../../Components/EditableText/EditableText";
 
 interface Props {}
 
 const WorkoutDetailPage = (props: Props) => {
   const { workoutId } = useParams<{ workoutId: string }>();
   const [workout, setWorkout] = useState<Workout>();
+  const [isPrivate, setIsPrivate] = useState<boolean | undefined>(
+    workout?.isPrivate
+  );
   const [addExerciseModalOpened, addExerciseModalHandlers] =
     useDisclosure(false);
   const [removeExerciseModalOpened, removeExerciseModalHandlers] =
@@ -46,6 +47,7 @@ const WorkoutDetailPage = (props: Props) => {
     GetWorkoutAPI(workoutId!)
       .then((response) => {
         if (response?.data) {
+          console.log(response.data);
           setWorkout(response.data);
         } else {
           toast.warn("No workout found");
@@ -56,8 +58,19 @@ const WorkoutDetailPage = (props: Props) => {
       });
   };
 
+  const partiallyUpdateWorkout = (updatedWorkout: WorkoutUpdateDto) => {
+    PartiallyUpdateWorkoutAPI(workoutId!, updatedWorkout).then((response) => {
+      if (response?.data) {
+        toast.success("Workout updated successfully");
+        setWorkout(response.data);
+      } else {
+        toast.warn("Workout could not be updated");
+      }
+    });
+  }
+
   const removeExercise = (workoutId: string, exerciseId: string) => {
-  RemoveExerciseFromWorkoutAPI(workoutId, exerciseId).then((response) => {
+    RemoveExerciseFromWorkoutAPI(workoutId, exerciseId).then((response) => {
       if (response?.status === 200) {
         toast.success("Exercise successfully removed");
         fetchExercises();
@@ -69,44 +82,107 @@ const WorkoutDetailPage = (props: Props) => {
     removeExerciseModalHandlers.close();
   };
 
-  const updateWorkout = (targetExercise: WorkoutExercise) => {
-    const updatedWorkout: WorkoutUpdateCreationDto = {
-      name: workout!.name,
-      description: workout!.description,
-      isPrivate: workout!.isPrivate,
-      workoutExercises: workout!.workoutExercises.map(
-        ({ exerciseId, sets, reps }) => ({
-          exerciseId: exerciseId,
-          sets:
-            exerciseId == targetExercise.exerciseId
-              ? targetExercise.sets
-              : sets,
-          reps:
-            exerciseId == targetExercise.exerciseId
-              ? targetExercise.reps
-              : reps,
-        })
-      ),
+  // //Remove this?
+  // const updateWorkout = (targetExercise: WorkoutExercise) => {
+  //   const updatedWorkout: WorkoutUpdateCreationDto = {
+  //     name: workout!.name,
+  //     description: workout!.description,
+  //     isPrivate: workout!.isPrivate,
+  //     workoutExercises: workout!.workoutExercises.map(
+  //       ({ exerciseId, sets, reps }) => ({
+  //         exerciseId: exerciseId,
+  //         sets:
+  //           exerciseId == targetExercise.exerciseId
+  //             ? targetExercise.sets
+  //             : sets,
+  //         reps:
+  //           exerciseId == targetExercise.exerciseId
+  //             ? targetExercise.reps
+  //             : reps,
+  //       })
+  //     ),
+  //   };
+
+  //   UpdateWorkoutAPI(workoutId!, updatedWorkout).then((response) => {
+  //     if (response?.status === 200 && response?.data) {
+  //       toast.success("Workout updated successfully");
+  //       setWorkout(response.data);
+  //     } else {
+  //       toast.warn("Workout could not be updated");
+  //     }
+  //   });
+  // };
+
+  const handleExerciseChange = (targetExercise: WorkoutExercise) => {
+    const updatedWorkout: WorkoutUpdateDto = {
+      workoutExercises: [
+        {
+          exerciseId: targetExercise.exerciseId,
+          reps: targetExercise.reps,
+          sets: targetExercise.sets,
+        },
+      ],
     };
 
-    UpdateWorkoutAPI(workoutId!, updatedWorkout).then((response) => {
-      if (response?.status === 200 && response?.data) {
-        toast.success("Workout updated successfully");
-        setWorkout(response.data);
-      } else {
-        toast.warn("Workout could not be updated");
-      }
-    });
+    partiallyUpdateWorkout(updatedWorkout);
+  };
+
+  const handleNameChange = (newName: string) => {
+    const updatedWorkout: WorkoutUpdateDto = {
+      name: newName
+    }
+
+    partiallyUpdateWorkout(updatedWorkout);
+  }
+
+  const handleDescriptionChange = (newDesc: string) => {
+    const updatedWorkout: WorkoutUpdateDto = {
+      description: newDesc
+    }
+
+    partiallyUpdateWorkout(updatedWorkout)
+  }
+
+  const handleVisibilityChange = (newVisibility: boolean) => {
+    setIsPrivate(newVisibility);
+
+    const updatedWorkout: WorkoutUpdateDto = {
+      isPrivate: newVisibility,
+    };
+
+    partiallyUpdateWorkout(updatedWorkout);
   };
 
   useEffect(() => {
     fetchExercises();
   }, []);
 
+  useEffect(() => {
+    if (workout) {
+      setIsPrivate(workout.isPrivate);
+    }
+  }, [workout]);
+
   return (
     <div className="mx-30 mt-10">
-      <h1 className="font-bold text-4xl pb-2">{workout?.name}</h1>
-      <p className="text-lg pb-3">{workout?.description}</p>
+      <div className="flex flex-row pb-2">
+        {/* <h1 className="font-bold text-4xl mr-auto">{workout?.name}</h1> */}
+        <EditableText className="!font-bold !text-3xl" editableText={workout?.name!} onSave={(newName) => handleNameChange(newName)}  />
+        <Switch
+          checked={isPrivate}
+          onChange={(event) =>
+            handleVisibilityChange(event.currentTarget.checked)
+          }
+          size="lg"
+          withThumbIndicator={false}
+          label="Private"
+          labelPosition="left"
+          color="purple"
+          className="ml-auto"
+          classNames={{ label: "font-bold" }}
+        />
+      </div>
+      <EditableText className="!text-lg !pb-3 !f lex" editableText={workout?.description!} onSave={(newDesc) => handleDescriptionChange(newDesc)}/>
       <div>
         {workout?.workoutExercises.map((exercise, index) => (
           <Card
@@ -151,7 +227,7 @@ const WorkoutDetailPage = (props: Props) => {
                   <ExerciseInput
                     draftItem={exercise.sets}
                     onSave={(updatedSets) =>
-                      updateWorkout({ ...exercise, sets: updatedSets })
+                      handleExerciseChange({ ...exercise, sets: updatedSets })
                     }
                   />
                   <Text size="md" c="dimmed">
@@ -165,10 +241,12 @@ const WorkoutDetailPage = (props: Props) => {
                 >
                   <ExerciseInput
                     draftItem={exercise.reps}
-                    onSave={(updatedReps) => updateWorkout({
-                      ...exercise,
-                      reps: updatedReps
-                    })}
+                    onSave={(updatedReps) =>
+                      handleExerciseChange({
+                        ...exercise,
+                        reps: updatedReps,
+                      })
+                    }
                   />
                   <Text size="md" c="dimmed">
                     REPS

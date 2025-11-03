@@ -2,7 +2,8 @@ import axios from "axios";
 import {
   AddExercisesToWorkoutDto,
   Workout,
-  WorkoutUpdateCreationDto,
+  WorkoutCreationDto,
+  WorkoutUpdateDto,
 } from "../Models/Workouts";
 import { HandleError } from "../Helpers/ErrorHandler";
 
@@ -35,9 +36,9 @@ export const GetWorkoutAPI = async (id: string) => {
   }
 };
 
-export const CreateWorkoutAPI = async (data: WorkoutUpdateCreationDto) => {
+export const CreateWorkoutAPI = async (data: WorkoutCreationDto) => {
   try {
-    const response = await axios.post(`${apiUrl}`, data); //Do I need to type this to createdataction?
+    const response = await axios.post<Workout>(`${apiUrl}`, data); //Do I need to type this to createdataction?
     return response;
   } catch (error) {
     HandleError(error);
@@ -53,16 +54,28 @@ export const GetPublicWorkoutsByNameAPI = async (workoutName: string) => {
   }
 };
 
-export const UpdateWorkoutAPI = async (
+// export const UpdateWorkoutAPI = async (
+//   workoutId: string,
+//   data: WorkoutUpdateCreationDto
+// ) => {
+//   try {
+//     console.log(workoutId, data);
+//     const response = await axios.put(`${apiUrl}/${workoutId}`, data);
+//     return response;
+//   } catch (error) {
+//     HandleError(error);
+//   }
+// };
+
+export const PartiallyUpdateWorkoutAPI = async (
   workoutId: string,
-  data: WorkoutUpdateCreationDto
+  data: WorkoutUpdateDto
 ) => {
   try {
-    console.log(workoutId, data);
-    const response = await axios.put(`${apiUrl}/${workoutId}`, data);
-    return response;
+    const response = axios.patch(`${apiUrl}/${workoutId}`,data)
+    return response
   } catch (error) {
-    HandleError(error);
+    HandleError(error)
   }
 };
 

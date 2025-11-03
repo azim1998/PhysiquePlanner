@@ -24,16 +24,18 @@ namespace PhysiquePlanner.Api.Services
             var workoutToCreate = _mapper.Map<Workout>(workoutCreationDto);
             workoutToCreate.ApplicationUserId = userId;
 
+            /*
             foreach (var workoutExercise in workoutToCreate.WorkoutExercises)
             {
                 var exercise = await _exerciseRepository.GetExerciseByIdAsync(workoutExercise.ExerciseId);
                 workoutExercise.Exercise = exercise;
             }
+            */
 
             return await _workoutRepository.CreateWorkoutAsync(workoutToCreate);
         }
 
-        public async Task<Workout?> UpdateWorkoutAsync(int workoutId, WorkoutUpdateDto workoutUpdateDto)
+        public async Task<Workout?> UpdateWorkoutAsync(int workoutId, WorkoutUpdateDto workoutUpdateDto) //Change to ReplaceWorkout i.e. Put
         {
             var workoutToUpdate = await _workoutRepository.GetWorkoutByIdAsync(workoutId);
 
@@ -41,6 +43,32 @@ namespace PhysiquePlanner.Api.Services
                 return null;
 
             workoutToUpdate = _mapper.Map(workoutUpdateDto, workoutToUpdate);
+
+            return await _workoutRepository.UpdateWorkoutAsync(workoutToUpdate);
+        }
+
+        public async Task<Workout?> PartiallyUpdateWorkoutAsync(int workoutId, WorkoutUpdateDto workoutUpdateDto) //Change to updateWorkoutAsync
+        {
+            var workoutToUpdate = await _workoutRepository.GetWorkoutByIdAsync(workoutId);
+
+            if (workoutToUpdate == null)
+                return null;
+
+            if (workoutUpdateDto.Name != null) workoutToUpdate.Name = workoutUpdateDto.Name;
+            if (workoutUpdateDto.Description != null) workoutToUpdate.Description = workoutUpdateDto.Description;
+            if (workoutUpdateDto.IsPrivate.HasValue) workoutToUpdate.IsPrivate = workoutUpdateDto.IsPrivate.Value;
+
+
+            if (workoutUpdateDto.WorkoutExercises.Count > 0)
+            {
+                foreach (var updatedExercise in workoutUpdateDto.WorkoutExercises)
+                {
+                    var existingExercise = workoutToUpdate.WorkoutExercises.FirstOrDefault(we => we.ExerciseId == updatedExercise.ExerciseId);
+
+                    if (updatedExercise.Reps.HasValue) existingExercise.Reps = updatedExercise.Reps.Value;
+                    if (updatedExercise.Sets.HasValue) existingExercise.Sets = updatedExercise.Sets.Value;
+                }
+            }
 
             return await _workoutRepository.UpdateWorkoutAsync(workoutToUpdate);
         }

@@ -11,11 +11,17 @@ export interface Workout {
     applicationUser: ApplicationUser
 }
 
-export interface WorkoutUpdateCreationDto {
+export interface WorkoutCreationDto {
     name: string
     description: string
     isPrivate: boolean
-    workoutExercises: ExerciseSelectionDto[] //Does this need changing to workoutExercises
+}
+
+export interface WorkoutUpdateDto {
+    name?: string
+    description?: string 
+    isPrivate?: boolean
+    workoutExercises?: ExerciseSelectionDto[]
 }
 
 export interface AddExercisesToWorkoutDto {

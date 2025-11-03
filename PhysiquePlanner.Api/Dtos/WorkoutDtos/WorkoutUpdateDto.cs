@@ -2,9 +2,9 @@
 {
     public class WorkoutUpdateDto
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public bool IsPrivate { get; set; }
-        public IList<ExerciseSelectionDto> WorkoutExercises { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public bool? IsPrivate { get; set; }
+        public IList<ExerciseSelectionDto> WorkoutExercises { get; set; } = new List<ExerciseSelectionDto>();
     }
 }

@@ -45,6 +45,24 @@ export const CreateWorkoutAPI = async (data: WorkoutCreationDto) => {
   }
 };
 
+export const ShareWorkoutAPI = async (id: string) => {
+  try {
+    const response = await axios.post<Workout>(`${apiUrl}/${id}/share`);
+    return response;
+  } catch (error) {
+    HandleError(error);
+  }
+}
+
+export const SaveWorkoutAPI = async (id: string) => {
+  try {
+    const response = await axios.post<Workout>(`${apiUrl}/${id}/save`);
+    return response;
+  } catch (error) {
+    HandleError(error);
+  }
+};
+
 export const GetPublicWorkoutsByNameAPI = async (workoutName: string) => {
   try {
     const response = axios.get<Workout[]>(`${apiUrl}/${workoutName}`);
@@ -72,10 +90,10 @@ export const PartiallyUpdateWorkoutAPI = async (
   data: WorkoutUpdateDto
 ) => {
   try {
-    const response = axios.patch(`${apiUrl}/${workoutId}`,data)
-    return response
+    const response = axios.patch(`${apiUrl}/${workoutId}`, data);
+    return response;
   } catch (error) {
-    HandleError(error)
+    HandleError(error);
   }
 };
 

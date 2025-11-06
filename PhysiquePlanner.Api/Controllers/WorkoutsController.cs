@@ -113,6 +113,34 @@ namespace PhysiquePlanner.Api.Controllers
             return CreatedAtAction(nameof(GetWorkout), new { workoutId = workoutCreated.Id }, workoutDto);
         }
 
+        [HttpPost("{workoutId}/share")]
+        public async Task<IActionResult> ShareWorkout([FromRoute] int workoutId)
+        {
+            var workoutShared = await _workoutService.ShareWorkoutAsync(workoutId);
+
+            if (workoutShared == null)
+                return StatusCode(500, "Workout could not be shared");
+
+            return Ok();
+        }
+
+
+        [HttpPost("{workoutId}/save")]
+        public async Task<IActionResult> SaveWorkout([FromRoute] int workoutId)
+        {
+            var userName = User.FindFirstValue(ClaimTypes.GivenName);
+            var user = await _userManager.FindByNameAsync(userName);
+
+            if (user == null)
+                return StatusCode(500, "Internal Server error");
+
+            var workoutSaved = await _workoutService.CloneWorkoutAsync(workoutId, user.Id);
+
+            var workoutDto = _mapper.Map<WorkoutDto>(workoutSaved);
+
+            return Ok(workoutDto);
+        }
+
         [HttpPut("{workoutId}")]
         public async Task<IActionResult> UpdateWorkout([FromRoute] int workoutId, [FromBody] WorkoutUpdateDto workoutUpdateDto)
         {

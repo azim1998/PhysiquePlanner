@@ -6,13 +6,16 @@ import {
   SegmentedControl,
   SimpleGrid,
   Switch,
+  Tooltip,
 } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import {
   CreateWorkoutAPI,
+  DeleteWorkoutAPI,
   GetAllPublicWorkoutsAPI,
   GetPublicWorkoutsByNameAPI,
   GetUserWorkoutsAPI,
+  SaveWorkoutAPI,
 } from "../../Services/WorkoutsService";
 import { Workout, WorkoutCreationDto } from "../../Models/Workouts";
 import { toast } from "react-toastify";
@@ -24,16 +27,21 @@ import { error } from "console";
 import { useDisclosure } from "@mantine/hooks";
 import { create } from "domain";
 import CreateItemModal from "../../Components/CreateItemModal/CreateItemModal";
+import { CiBookmarkPlus } from "react-icons/ci";
+import { MdDelete } from "react-icons/md";
 
 interface Props {}
 
 const WorkoutsPage = (props: Props) => {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [view, setView] = useState<string>("public");
-  const [createWorkoutModalOpened, createWorkoutModalHandlers] = useDisclosure(false);
+  const [createWorkoutModalOpened, createWorkoutModalHandlers] =
+    useDisclosure(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log(view);
+    console.log(workouts)
     view == "public"
       ? GetAllPublicWorkoutsAPI()
           .then((response) => {
@@ -77,19 +85,43 @@ const WorkoutsPage = (props: Props) => {
     const newWorkout: WorkoutCreationDto = {
       name: newItem.name,
       description: newItem.description,
-      isPrivate: newItem.isPrivate
-    }
+      isPrivate: newItem.isPrivate,
+    };
 
     CreateWorkoutAPI(newWorkout).then((response) => {
       if (response?.status == 201 && response?.data) {
-        console.log(response.data)
-        toast.success("Workout Created")
-        navigate(`/workouts/${response.data.id}`)
+        console.log(response.data);
+        toast.success("Workout Created");
+        navigate(`/workouts/${response.data.id}`);
       } else {
-        toast.warn("Workout could not be created")
+        toast.warn("Workout could not be created");
       }
-    })
-  }
+    });
+  };
+
+  const handleSaveWorkout = (workoutId: string) => {
+    SaveWorkoutAPI(workoutId).then((response) => {
+      if (response?.status == 200 && response.data) {
+        toast.success("Workout saved to My Workouts");
+        //Do I need data
+      } else {
+        toast.warn("Workout could not be saved");
+      }
+    });
+  };
+
+  const handleDeleteUserWorkout = (workoutId: string) => {
+    DeleteWorkoutAPI(workoutId).then((response) => {
+      if (response?.status == 200) {
+        toast.success("Workout removed successfully");
+        setWorkouts((prev) =>
+          prev.filter((w) => w.id.toString() !== workoutId)
+        );
+      } else {
+        toast.warn("Workout could not be removed");
+      }
+    });
+  };
 
   return (
     <div>
@@ -102,11 +134,19 @@ const WorkoutsPage = (props: Props) => {
             Workouts
           </h1>
 
-          <Button radius="md" color="teal" onClick={() => createWorkoutModalHandlers.open()}>
+          <Button
+            radius="md"
+            color="teal"
+            onClick={() => createWorkoutModalHandlers.open()}
+          >
             Create Workout
           </Button>
 
-          <CreateItemModal opened={createWorkoutModalOpened} close={createWorkoutModalHandlers.close} handleCreate={(newItem) => handleCreateWorkout(newItem)}/>
+          <CreateItemModal
+            opened={createWorkoutModalOpened}
+            close={createWorkoutModalHandlers.close}
+            handleCreate={(newItem) => handleCreateWorkout(newItem)}
+          />
         </div>
         <SegmentedControl
           value={view}
@@ -123,27 +163,55 @@ const WorkoutsPage = (props: Props) => {
       <SimpleGrid cols={3} className="mx-30 mt-10">
         {workouts?.length > 0 ? (
           workouts.map((workout) => (
-            <Link to={`/workouts/${workout.id}`}>
-              <Card
-                key={workout.name}
-                shadow="md"
-                padding="xl"
-                radius="md"
-                withBorder
-                className="w-8/12 h-75"
-              >
+            <Card
+              key={workout.id}
+              shadow="md"
+              padding="xl"
+              radius="md"
+              withBorder
+              className="w-8/12 h-75"
+            >
+              {view == "public" ? (
+                <>
+                  <Tooltip label="Save Workout" color="teal">
+                    <Button
+                      variant="subtle"
+                      color="gray"
+                      className="ml-auto"
+                      onClick={() => handleSaveWorkout(workout.id.toString())}
+                    >
+                      <CiBookmarkPlus size={30} />
+                    </Button>
+                  </Tooltip>
+                </>
+              ) : (
+                <>
+                  <Tooltip label="Delete Workout" color="red">
+                    <Button
+                      variant="subtle"
+                      color="gray"
+                      onClick={() =>
+                        handleDeleteUserWorkout(workout.id.toString())
+                      }
+                    >
+                      <MdDelete size={20} />
+                    </Button>
+                  </Tooltip>
+                </>
+              )}
+              <Link to={`/workouts/${workout.id}`}>
                 <img
                   src={exerciseImage}
                   alt="workoutImage"
                   className="w-auto h-auto object-contain"
                 />
+              </Link>
 
-                <Text fw={500}>{workout.name}</Text>
-                <Text size="sm" c="dimmed">
-                  {workout.description}
-                </Text>
-              </Card>
-            </Link>
+              <Text fw={500}>{workout.name}</Text>
+              <Text size="sm" c="dimmed">
+                {workout.description}
+              </Text>
+            </Card>
           ))
         ) : (
           <h1>No workouts found</h1>

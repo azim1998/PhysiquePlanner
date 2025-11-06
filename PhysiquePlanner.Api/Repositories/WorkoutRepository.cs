@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PhysiquePlanner.Api.Constants;
 using PhysiquePlanner.Api.Repositories.Interfaces;
 using PhysiquePlanner.Data;
 using PhysiquePlanner.Models;
@@ -29,7 +30,8 @@ namespace PhysiquePlanner.Api.Repositories
         public async Task<ICollection<Workout>> GetAllPublicWorkoutsAsync()
         {
             return await _applicationDbContext.Workouts
-                .Where(w => w.IsPrivate == false)
+                //.Where(w => w.IsPrivate == false)
+                .Where(w => w.ApplicationUserId == SystemUser.Id)
                 .Include(w => w.WorkoutExercises)
                 .ThenInclude(we => we.Exercise)
                 .ToListAsync();
@@ -37,7 +39,8 @@ namespace PhysiquePlanner.Api.Repositories
 
         public async Task<ICollection<Workout>> GetPublicWorkoutByNameAsync(string workoutName)
         {
-            return await _applicationDbContext.Workouts.Where(w => w.Name.Contains(workoutName) && w.IsPrivate == false)
+            return await _applicationDbContext.Workouts.Where(w => w.ApplicationUserId == SystemUser.Id && w.Name.Contains(workoutName))
+                //.Where(w => w.Name.Contains(workoutName) && w.IsPrivate == false)
                 .Include(w => w.WorkoutExercises)
                 .ThenInclude(we => we.Exercise)
                 .ToListAsync();

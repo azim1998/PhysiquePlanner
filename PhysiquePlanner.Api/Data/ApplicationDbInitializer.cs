@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PhysiquePlanner.Api.Constants;
+using PhysiquePlanner.Api.Models;
 using PhysiquePlanner.Models;
 
 namespace PhysiquePlanner.Api.Data
@@ -18,6 +20,7 @@ namespace PhysiquePlanner.Api.Data
             modelBuilder.Entity<Exercise>().HasData(exercises);
             modelBuilder.Entity<Muscle>().HasData(muscles);
             modelBuilder.Entity<ExerciseMuscle>().HasData(exerciseMuscles);
+            modelBuilder.Entity<ApplicationUser>().HasData(defaultUsers);
         }
 
 
@@ -97,6 +100,25 @@ namespace PhysiquePlanner.Api.Data
                 MuscleId = 3
             }
         };
+
+        private readonly List<ApplicationUser> defaultUsers = new List<ApplicationUser>()
+        {
+            new ApplicationUser
+            {
+                Id = SystemUser.Id,
+                UserName = SystemUser.Username,
+                NormalizedUserName = SystemUser.Username.ToUpper(),
+                Email = SystemUser.Email,
+                NormalizedEmail = SystemUser.Email.ToUpper(),
+                EmailConfirmed = true,
+                PasswordHash = "",
+                SecurityStamp = Guid.NewGuid().ToString(),
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+
+
+            }
+        };
+
 
     }
 }

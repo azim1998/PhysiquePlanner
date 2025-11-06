@@ -9,6 +9,7 @@ import {
   GetWorkoutAPI,
   PartiallyUpdateWorkoutAPI,
   RemoveExerciseFromWorkoutAPI,
+  ShareWorkoutAPI,
 } from "../../Services/WorkoutsService";
 import { toast } from "react-toastify";
 import {
@@ -25,6 +26,7 @@ import { Link } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
 import AddExerciseModal from "../../Components/AddExerciseModal/AddExerciseModal";
 import { MdDelete } from "react-icons/md";
+import { FaShareFromSquare  } from "react-icons/fa6";
 import RemoveItemModal from "../../Components/RemoveItemModal/RemoveItemModal";
 import { WorkoutExercise } from "../../Models/WorkoutExercise";
 import ExerciseInput from "../../Components/ExerciseInput/ExerciseInput";
@@ -82,37 +84,6 @@ const WorkoutDetailPage = (props: Props) => {
     removeExerciseModalHandlers.close();
   };
 
-  // //Remove this?
-  // const updateWorkout = (targetExercise: WorkoutExercise) => {
-  //   const updatedWorkout: WorkoutUpdateCreationDto = {
-  //     name: workout!.name,
-  //     description: workout!.description,
-  //     isPrivate: workout!.isPrivate,
-  //     workoutExercises: workout!.workoutExercises.map(
-  //       ({ exerciseId, sets, reps }) => ({
-  //         exerciseId: exerciseId,
-  //         sets:
-  //           exerciseId == targetExercise.exerciseId
-  //             ? targetExercise.sets
-  //             : sets,
-  //         reps:
-  //           exerciseId == targetExercise.exerciseId
-  //             ? targetExercise.reps
-  //             : reps,
-  //       })
-  //     ),
-  //   };
-
-  //   UpdateWorkoutAPI(workoutId!, updatedWorkout).then((response) => {
-  //     if (response?.status === 200 && response?.data) {
-  //       toast.success("Workout updated successfully");
-  //       setWorkout(response.data);
-  //     } else {
-  //       toast.warn("Workout could not be updated");
-  //     }
-  //   });
-  // };
-
   const handleExerciseChange = (targetExercise: WorkoutExercise) => {
     const updatedWorkout: WorkoutUpdateDto = {
       workoutExercises: [
@@ -153,6 +124,16 @@ const WorkoutDetailPage = (props: Props) => {
     partiallyUpdateWorkout(updatedWorkout);
   };
 
+  const handleShareWorkout = () => {
+    ShareWorkoutAPI(workoutId!).then((response) => {
+      if (response?.status==200) {
+        toast.success("Workout shared successfully")
+      } else {
+        toast.warn("Workout could not be shared")
+      }
+    })
+  }
+  
   useEffect(() => {
     fetchExercises();
   }, []);
@@ -166,21 +147,10 @@ const WorkoutDetailPage = (props: Props) => {
   return (
     <div className="mx-30 mt-10">
       <div className="flex flex-row pb-2">
-        {/* <h1 className="font-bold text-4xl mr-auto">{workout?.name}</h1> */}
         <EditableText className="!font-bold !text-3xl" editableText={workout?.name!} onSave={(newName) => handleNameChange(newName)}  />
-        <Switch
-          checked={isPrivate}
-          onChange={(event) =>
-            handleVisibilityChange(event.currentTarget.checked)
-          }
-          size="lg"
-          withThumbIndicator={false}
-          label="Private"
-          labelPosition="left"
-          color="purple"
-          className="ml-auto"
-          classNames={{ label: "font-bold" }}
-        />
+        <Button className="ml-auto" onClick={() => handleShareWorkout()}>
+          <FaShareFromSquare  size={20} />
+        </Button>
       </div>
       <EditableText className="!text-lg !pb-3 !f lex" editableText={workout?.description!} onSave={(newDesc) => handleDescriptionChange(newDesc)}/>
       <div>

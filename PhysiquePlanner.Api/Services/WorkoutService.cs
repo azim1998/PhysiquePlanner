@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PhysiquePlanner.Api.Constants;
 using PhysiquePlanner.Api.Dtos.WorkoutDtos;
 using PhysiquePlanner.Api.Repositories.Interfaces;
 using PhysiquePlanner.Api.Services.Interfaces;
@@ -33,6 +34,53 @@ namespace PhysiquePlanner.Api.Services
             */
 
             return await _workoutRepository.CreateWorkoutAsync(workoutToCreate);
+        }
+
+        public async Task<Workout> CloneWorkoutAsync(int workoutId, string userId)
+        {
+            var sourceWorkout = await _workoutRepository.GetWorkoutByIdAsync(workoutId);
+
+            if (sourceWorkout == null)
+                return null;
+
+            var clone = new Workout
+            {
+                Name = sourceWorkout.Name,
+                Description = sourceWorkout.Description,
+                ApplicationUserId = userId,
+                WorkoutExercises = sourceWorkout.WorkoutExercises.Select(e => new WorkoutExercise
+                {
+                    ExerciseId = e.ExerciseId,
+                    Sets = e.Sets,
+                    Reps = e.Reps
+                }).ToList()
+            };
+
+            return await _workoutRepository.CreateWorkoutAsync(clone);
+
+        }
+
+        public async Task<Workout?> ShareWorkoutAsync(int workoutId)
+        {
+            var sourceWorkout = await _workoutRepository.GetWorkoutByIdAsync(workoutId);
+
+            if (sourceWorkout == null)
+                return null;
+
+            var sharedWorkout = new Workout
+            {
+                Name = sourceWorkout.Name,
+                Description = sourceWorkout.Description,
+                ApplicationUserId = SystemUser.Id,
+                WorkoutExercises = sourceWorkout.WorkoutExercises.Select(e => new WorkoutExercise
+                {
+                    ExerciseId = e.ExerciseId,
+                    Sets = e.Sets,
+                    Reps = e.Reps
+                }).ToList()
+            };
+
+            return await _workoutRepository.CreateWorkoutAsync(sharedWorkout);
         }
 
         public async Task<Workout?> UpdateWorkoutAsync(int workoutId, WorkoutUpdateDto workoutUpdateDto) //Change to ReplaceWorkout i.e. Put

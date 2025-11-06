@@ -10,7 +10,7 @@ interface Props {
 }
 
 const CreateItemModal = ({ opened, close, handleCreate }: Props) => {
-  const [isPrivate, setIsPrivate] = useState<boolean>(false);
+  // const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -58,7 +58,7 @@ const CreateItemModal = ({ opened, close, handleCreate }: Props) => {
             )}
           </div>
 
-          {/* Private Checkbox */}
+          {/* Private Checkbox
           <div className="flex items-center">
             <label className="font-bold">Set Private</label>
             <Checkbox
@@ -66,7 +66,7 @@ const CreateItemModal = ({ opened, close, handleCreate }: Props) => {
               onChange={(event) => setIsPrivate(event.currentTarget.checked)}
               className="ml-auto"
             />
-          </div>
+          </div> */}
 
           {/* Submit Button */}
           <Button type="submit" className="mt-2">

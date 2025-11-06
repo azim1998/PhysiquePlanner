@@ -3,7 +3,7 @@ import App from "../App";
 import ExercisesPage from "../Pages/ExercisesPage/ExercisesPage";
 import HomePage from "../Pages/HomePage/HomePage";
 import LoginPage from "../Pages/LoginPage/LoginPage";
-import IndividualExercisePage from "../Pages/ExerciseDetailPage/ExerciseDetailPage";
+import ExerciseDetailPage from "../Pages/ExerciseDetailPage/ExerciseDetailPage";
 import RegisterPage from "../Pages/RegisterPage/RegisterPage";
 import WorkoutsPage from "../Pages/WorkoutsPage/WorkoutsPage";
 import WorkoutDetailPage from "../Pages/WorkoutDeatilPage/WorkoutDetailPage";
@@ -16,7 +16,7 @@ export const router = createBrowserRouter([
       { path: "home", element: <HomePage /> },
       { path: "login", element: <LoginPage /> },
       { path: "exercises", element: <ExercisesPage /> },
-      { path: "exercises/:exerciseId", element: <IndividualExercisePage /> },
+      { path: "exercises/:exerciseId", element: <ExerciseDetailPage /> },
       { path: "register", element: <RegisterPage /> },
       { path: "workouts", element: <WorkoutsPage /> },
       { path: "workouts/:workoutId", element: <WorkoutDetailPage/>}

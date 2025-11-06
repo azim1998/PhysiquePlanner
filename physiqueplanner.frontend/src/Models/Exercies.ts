@@ -6,6 +6,7 @@ export interface Exercise {
 }
 
 export interface Muscle {
+  id: number;
   name: string;
   description: string;
 }

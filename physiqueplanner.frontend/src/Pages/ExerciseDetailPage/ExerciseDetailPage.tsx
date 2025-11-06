@@ -7,12 +7,12 @@ import exerciseImage from "../../Assets/dumbbell.png"
 
 interface Props {}
 
-const IndividualExercisePage = (props: Props) => {
+const ExerciseDetailPage = (props: Props) => {
   const { exerciseId } = useParams();
   const [exercise, setExercise] = useState<Exercise>();
 
   useEffect(() => {
-    console.log("exerciseId:", { exerciseId });
+    console.log(exercise);
     GetExerciseByIdAPI(exerciseId!)
       .then((response) => {
         if (response) {
@@ -31,7 +31,7 @@ const IndividualExercisePage = (props: Props) => {
       <h1 className="font-bold text-4xl pb-2">{exercise?.name}</h1>
       <div className="flex items-start">
         {exercise?.muscles.map((muscle) => (
-          <p className="text-lg border-transparent rounded-xl px-1 bg-gray-200 ">{muscle.name}</p>
+          <p key={muscle.id} className="text-lg border-transparent rounded-xl px-1 bg-gray-200 ">{muscle.name}</p>
         ))}
       </div>
       <h1 className="pt-4 text-2xl italic">Description</h1>
@@ -41,4 +41,4 @@ const IndividualExercisePage = (props: Props) => {
   );
 };
 
-export default IndividualExercisePage;
+export default ExerciseDetailPage;

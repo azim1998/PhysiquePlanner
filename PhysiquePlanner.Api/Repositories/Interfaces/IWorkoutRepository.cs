@@ -8,6 +8,7 @@ namespace PhysiquePlanner.Api.Repositories.Interfaces
         Task<Workout> GetWorkoutByIdAsync(int workoutId);
         Task<ICollection<Workout>> GetUserWorkoutsAsync(string userId);
         Task<ICollection<Workout>> GetPublicWorkoutByNameAsync(string workoutName);
+        Task<ICollection<Workout>> GetUserWorkoutsByNameAsync(string workoutName, string userId);
         Task<Workout> CreateWorkoutAsync(Workout workoutToCreate);
         Task<Workout> UpdateWorkoutAsync(Workout workoutToUpdate);
         Task<bool> WorkoutExistsAsync(int workoutId);

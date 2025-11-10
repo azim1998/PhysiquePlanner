@@ -48,11 +48,11 @@ const WorkoutDetailPage = (props: Props) => {
   const fetchExercises = () => {
     GetWorkoutAPI(workoutId!)
       .then((response) => {
-        if (response?.data) {
+        if (response?.success && response.data) {
           console.log(response.data);
           setWorkout(response.data);
         } else {
-          toast.warn("No workout found");
+          toast.warn(response?.message);
         }
       })
       .catch((e) => {
@@ -62,8 +62,8 @@ const WorkoutDetailPage = (props: Props) => {
 
   const partiallyUpdateWorkout = (updatedWorkout: WorkoutUpdateDto) => {
     PartiallyUpdateWorkoutAPI(workoutId!, updatedWorkout).then((response) => {
-      if (response?.data) {
-        toast.success("Workout updated successfully");
+      if (response?.success && response.data) {
+        toast.success(response.message);
         setWorkout(response.data);
       } else {
         toast.warn("Workout could not be updated");
@@ -73,8 +73,8 @@ const WorkoutDetailPage = (props: Props) => {
 
   const removeExercise = (workoutId: string, exerciseId: string) => {
     RemoveExerciseFromWorkoutAPI(workoutId, exerciseId).then((response) => {
-      if (response?.status === 200) {
-        toast.success("Exercise successfully removed");
+      if (response?.success) {
+        toast.success(response.message);
         fetchExercises();
       } else {
         toast.warn("Exercise could not be removed");
@@ -126,7 +126,7 @@ const WorkoutDetailPage = (props: Props) => {
 
   const handleShareWorkout = () => {
     ShareWorkoutAPI(workoutId!).then((response) => {
-      if (response?.status==200) {
+      if (response?.success) {
         toast.success("Workout shared successfully")
       } else {
         toast.warn("Workout could not be shared")

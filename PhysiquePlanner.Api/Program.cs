@@ -27,6 +27,7 @@ builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
 builder.Services.AddScoped<IWorkoutRepository, WorkoutRepository>();
 builder.Services.AddScoped<IWorkoutService, WorkoutService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IExerciseService, ExerciseService>();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {

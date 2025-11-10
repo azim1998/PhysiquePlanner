@@ -1,33 +1,32 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PhysiquePlanner.Api.Common;
 using PhysiquePlanner.Api.Dtos.ExerciseDtos;
+using PhysiquePlanner.Api.Services.Interfaces;
 using PhysiquePlanner.Models;
-using PhysiquePlanner.Repositories.Interfaces;
 
 namespace PhysiquePlanner.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ExercisesController : ControllerBase
+    public class ExercisesController : BaseApiController
     {
-        private readonly IExerciseRepository _exerciseRepository;
-        private readonly IMapper _mapper;
+        private readonly IExerciseService _exerciseService;
 
-        public ExercisesController(IExerciseRepository exerciseRepository, IMapper mapper)
+        public ExercisesController(IExerciseService exerciseService, IMapper mapper) : base(mapper)
         {
-            _exerciseRepository = exerciseRepository;
-            _mapper = mapper;
+            _exerciseService = exerciseService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllExercises()
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var result = await _exerciseService.GetAllExercisesAsync();
 
-            var exercises = await _exerciseRepository.GetAllExercisesAsync();
-            var exercisesDto = _mapper.Map<ICollection<ExerciseDto>>(exercises);
-            return Ok(exercisesDto);
+            if (result.Data == null || !result.Data.Any())
+                return ReturnNotFound("No exercises found");
+
+            return ReturnResult<ICollection<Exercise>, ICollection<ExerciseDto>>(result);
         }
 
         [HttpGet("{exerciseId:int}")]
@@ -36,14 +35,12 @@ namespace PhysiquePlanner.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var exercise = await _exerciseRepository.GetExerciseByIdAsync(exerciseId);
+            var result = await _exerciseService.GetExerciseByIdAsync(exerciseId);
 
-            if (exercise == null)
-                return NotFound();
+            if (result.Data == null)
+                return ReturnNotFound("Exercise could not be found");
 
-            var exerciseDto = _mapper.Map<ExerciseDto>(exercise);
-
-            return Ok(exerciseDto);
+            return ReturnResult<Exercise, ExerciseDto>(result);
         }
 
         [HttpGet("{exerciseName:alpha}")]
@@ -52,14 +49,12 @@ namespace PhysiquePlanner.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var exercises = await _exerciseRepository.GetExercisesByName(exerciseName);
+            var result = await _exerciseService.GetExerciseByNameAsync(exerciseName);
 
-            if (exercises == null)
-                return NotFound();
+            if (result.Data == null || !result.Data.Any())
+                return ReturnNotFound("No exercises found");
 
-            var exercisesDto = _mapper.Map<ICollection<Exercise>>(exercises);
-
-            return Ok(exercisesDto);
+            return ReturnResult<ICollection<Exercise>, ICollection<ExerciseDto>>(result);
         }
 
     }

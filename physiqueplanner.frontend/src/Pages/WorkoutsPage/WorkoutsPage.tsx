@@ -15,6 +15,7 @@ import {
   GetAllPublicWorkoutsAPI,
   GetPublicWorkoutsByNameAPI,
   GetUserWorkoutsAPI,
+  GetUserWorkoutsByNameAPI,
   SaveWorkoutAPI,
 } from "../../Services/WorkoutsService";
 import { Workout, WorkoutCreationDto } from "../../Models/Workouts";
@@ -41,7 +42,7 @@ const WorkoutsPage = (props: Props) => {
 
   useEffect(() => {
     console.log(view);
-    console.log(workouts)
+    console.log(workouts);
     view == "public"
       ? GetAllPublicWorkoutsAPI()
           .then((response) => {
@@ -68,17 +69,29 @@ const WorkoutsPage = (props: Props) => {
   }, [view]);
 
   const onSearchSubmit = (search: string) => {
-    GetPublicWorkoutsByNameAPI(search)
-      .then((response) => {
-        if (response?.data) {
-          setWorkouts(response.data);
-        } else {
-          toast.warning("No workouts found");
-        }
-      })
-      .catch((e) => {
-        toast.warn("Failed to get workouts");
-      });
+    view == "public"
+      ? GetPublicWorkoutsByNameAPI(search)
+          .then((response) => {
+            if (response?.data) {
+              setWorkouts(response.data);
+            } else {
+              toast.warning("No workouts found");
+            }
+          })
+          .catch((e) => {
+            toast.warn("Failed to get workouts");
+          })
+      : GetUserWorkoutsByNameAPI(search)
+          .then((response) => {
+            if (response?.data) {
+              setWorkouts(response.data);
+            } else {
+              toast.warning("No workouts found");
+            }
+          })
+          .catch((e) => {
+            toast.warn("Failed to get workouts");
+          });
   };
 
   const handleCreateWorkout = (newItem: WorkoutCreationDto) => {
@@ -89,7 +102,7 @@ const WorkoutsPage = (props: Props) => {
     };
 
     CreateWorkoutAPI(newWorkout).then((response) => {
-      if (response?.status == 201 && response?.data) {
+      if (response?.success && response?.data) {
         console.log(response.data);
         toast.success("Workout Created");
         navigate(`/workouts/${response.data.id}`);
@@ -101,7 +114,7 @@ const WorkoutsPage = (props: Props) => {
 
   const handleSaveWorkout = (workoutId: string) => {
     SaveWorkoutAPI(workoutId).then((response) => {
-      if (response?.status == 200 && response.data) {
+      if (response?.success && response.data) {
         toast.success("Workout saved to My Workouts");
         //Do I need data
       } else {
@@ -112,7 +125,7 @@ const WorkoutsPage = (props: Props) => {
 
   const handleDeleteUserWorkout = (workoutId: string) => {
     DeleteWorkoutAPI(workoutId).then((response) => {
-      if (response?.status == 200) {
+      if (response?.success) {
         toast.success("Workout removed successfully");
         setWorkouts((prev) =>
           prev.filter((w) => w.id.toString() !== workoutId)

@@ -54,11 +54,11 @@ const AddExerciseModal = ({ workoutId, opened, close, onExerciseAdded }: Props) 
 
     AddExercisesToWorkoutApi(String(workoutId), addExercisesToWorkoutDto)
       .then((response) => {
-        if (response?.status === 200) {
-          toast.success("Exercises added successfully!");
+        if (response?.success) {
+          toast.success(response.message);
           onExerciseAdded();
         } else {
-          toast.warn("Exercises could not be added");
+          toast.warn(response?.message);
         }
       })
       .catch((error) => {

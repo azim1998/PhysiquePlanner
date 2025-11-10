@@ -6,13 +6,14 @@ import {
   WorkoutUpdateDto,
 } from "../Models/Workouts";
 import { HandleError } from "../Helpers/ErrorHandler";
+import {Result} from "../Models/Result"
 
 const apiUrl = "http://localhost:5195/api/Workouts";
 
 export const GetAllPublicWorkoutsAPI = async () => {
   try {
-    const response = await axios.get<Workout[]>(`${apiUrl}/`);
-    return response;
+    const response = await axios.get<Result<Workout[]>>(`${apiUrl}/`);
+    return response.data;
   } catch (error) {
     HandleError(error);
   }
@@ -20,8 +21,17 @@ export const GetAllPublicWorkoutsAPI = async () => {
 
 export const GetUserWorkoutsAPI = async () => {
   try {
-    const response = await axios.get<Workout[]>(`${apiUrl}/userWorkouts`);
-    return response;
+    const response = await axios.get<Result<Workout[]>>(`${apiUrl}/userWorkouts`);
+    return response.data;
+  } catch (error) {
+    HandleError(error);
+  }
+};
+
+export const GetUserWorkoutsByNameAPI = async (workoutName: string) => {
+  try {
+    const response = await axios.get<Result<Workout[]>>(`${apiUrl}/userWorkouts/${workoutName}`);
+    return response.data;
   } catch (error) {
     HandleError(error);
   }
@@ -29,8 +39,8 @@ export const GetUserWorkoutsAPI = async () => {
 
 export const GetWorkoutAPI = async (id: string) => {
   try {
-    const response = await axios.get<Workout>(`${apiUrl}/${id}`);
-    return response;
+    const response = await axios.get<Result<Workout>>(`${apiUrl}/${id}`);
+    return response.data;
   } catch (error) {
     HandleError(error);
   }
@@ -38,8 +48,8 @@ export const GetWorkoutAPI = async (id: string) => {
 
 export const CreateWorkoutAPI = async (data: WorkoutCreationDto) => {
   try {
-    const response = await axios.post<Workout>(`${apiUrl}`, data); //Do I need to type this to createdataction?
-    return response;
+    const response = await axios.post<Result<Workout>>(`${apiUrl}`, data); //Do I need to type this to createdataction?
+    return response.data;
   } catch (error) {
     HandleError(error);
   }
@@ -47,8 +57,8 @@ export const CreateWorkoutAPI = async (data: WorkoutCreationDto) => {
 
 export const ShareWorkoutAPI = async (id: string) => {
   try {
-    const response = await axios.post<Workout>(`${apiUrl}/${id}/share`);
-    return response;
+    const response = await axios.post<Result<Workout>>(`${apiUrl}/${id}/share`);
+    return response.data;
   } catch (error) {
     HandleError(error);
   }
@@ -56,8 +66,8 @@ export const ShareWorkoutAPI = async (id: string) => {
 
 export const SaveWorkoutAPI = async (id: string) => {
   try {
-    const response = await axios.post<Workout>(`${apiUrl}/${id}/save`);
-    return response;
+    const response = await axios.post<Result<Workout>>(`${apiUrl}/${id}/save`);
+    return response.data;
   } catch (error) {
     HandleError(error);
   }
@@ -65,33 +75,20 @@ export const SaveWorkoutAPI = async (id: string) => {
 
 export const GetPublicWorkoutsByNameAPI = async (workoutName: string) => {
   try {
-    const response = axios.get<Workout[]>(`${apiUrl}/${workoutName}`);
-    return response;
+    const response = await axios.get<Result<Workout[]>>(`${apiUrl}/${workoutName}`);
+    return response.data;
   } catch (error) {
     HandleError(error);
   }
 };
-
-// export const UpdateWorkoutAPI = async (
-//   workoutId: string,
-//   data: WorkoutUpdateCreationDto
-// ) => {
-//   try {
-//     console.log(workoutId, data);
-//     const response = await axios.put(`${apiUrl}/${workoutId}`, data);
-//     return response;
-//   } catch (error) {
-//     HandleError(error);
-//   }
-// };
 
 export const PartiallyUpdateWorkoutAPI = async (
   workoutId: string,
   data: WorkoutUpdateDto
 ) => {
   try {
-    const response = axios.patch(`${apiUrl}/${workoutId}`, data);
-    return response;
+    const response = await axios.patch<Result<Workout>>(`${apiUrl}/${workoutId}`, data);
+    return response.data;
   } catch (error) {
     HandleError(error);
   }
@@ -99,8 +96,8 @@ export const PartiallyUpdateWorkoutAPI = async (
 
 export const DeleteWorkoutAPI = async (workoutId: string) => {
   try {
-    const response = axios.delete(`${apiUrl}/${workoutId}`);
-    return response;
+    const response = await axios.delete<Result<object>>(`${apiUrl}/${workoutId}`);
+    return response.data;
   } catch (error) {
     HandleError(error);
   }
@@ -111,11 +108,11 @@ export const AddExercisesToWorkoutApi = async (
   exerciseIds: AddExercisesToWorkoutDto
 ) => {
   try {
-    const response = axios.post(
+    const response = await axios.post<Result<Workout[]>>(
       `${apiUrl}/${workoutId}/exercises`,
       exerciseIds
     );
-    return response;
+    return response.data;
   } catch (error) {
     HandleError(error);
   }
@@ -126,10 +123,10 @@ export const RemoveExerciseFromWorkoutAPI = async (
   exerciseId: string
 ) => {
   try {
-    const response = axios.delete(
+    const response = await axios.delete<Result<Workout[]>>(
       `${apiUrl}/${workoutId}/exercises/${exerciseId}`
     );
-    return response;
+    return response.data;
   } catch (error) {
     HandleError(error);
   }

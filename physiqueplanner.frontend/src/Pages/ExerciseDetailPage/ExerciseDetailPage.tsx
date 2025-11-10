@@ -16,7 +16,7 @@ const ExerciseDetailPage = (props: Props) => {
     GetExerciseByIdAPI(exerciseId!)
       .then((response) => {
         if (response) {
-          setExercise(response.data);
+          setExercise(response.data!);
         } else {
           toast("Exercise could not be found");
         }

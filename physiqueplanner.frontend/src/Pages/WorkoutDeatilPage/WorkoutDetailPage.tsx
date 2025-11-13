@@ -145,7 +145,7 @@ const WorkoutDetailPage = (props: Props) => {
   }, [workout]);
 
   return (
-    <div className="mx-30 mt-10">
+    <div>
       <div className="flex flex-row pb-2">
         <EditableText className="!font-bold !text-3xl" editableText={workout?.name!} onSave={(newName) => handleNameChange(newName)}  />
         <Button className="ml-auto" onClick={() => handleShareWorkout()}>

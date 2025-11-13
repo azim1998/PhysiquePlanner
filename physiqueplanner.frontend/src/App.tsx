@@ -16,7 +16,9 @@ function App() {
       <MantineProvider>
         <AuthProvider>
           <Navbar />
+          <div className="mx-auto pt-4 sm:max-w-[700px] md:max-w-[1000px]">
           <Outlet />
+          </div>
           <ToastContainer />
         </AuthProvider>
       </MantineProvider>

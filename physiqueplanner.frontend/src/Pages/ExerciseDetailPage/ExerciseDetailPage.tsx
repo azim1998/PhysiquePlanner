@@ -27,7 +27,7 @@ const ExerciseDetailPage = (props: Props) => {
   }, []);
 
   return (
-    <div className="mx-30 mt-10">
+    <div>
       <h1 className="font-bold text-4xl pb-2">{exercise?.name}</h1>
       <div className="flex items-start">
         {exercise?.muscles.map((muscle) => (

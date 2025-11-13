@@ -173,63 +173,72 @@ const WorkoutsPage = (props: Props) => {
 
         <Search onSearch={onSearchSubmit} placeholder="Search Workouts" />
       </div>
-      <SimpleGrid cols={3} className="mx-30 mt-10">
-        {workouts?.length > 0 ? (
-          workouts.map((workout) => (
-            <Card
-              key={workout.id}
-              shadow="md"
-              padding="xl"
-              radius="md"
-              withBorder
-              className="w-8/12 h-75"
-            >
-              {view == "public" ? (
-                <>
-                  <Tooltip label="Save Workout" color="teal">
-                    <Button
-                      variant="subtle"
-                      color="gray"
-                      className="ml-auto"
-                      onClick={() => handleSaveWorkout(workout.id.toString())}
-                    >
-                      <CiBookmarkPlus size={30} />
-                    </Button>
-                  </Tooltip>
-                </>
-              ) : (
-                <>
-                  <Tooltip label="Delete Workout" color="red">
-                    <Button
-                      variant="subtle"
-                      color="gray"
-                      onClick={() =>
-                        handleDeleteUserWorkout(workout.id.toString())
-                      }
-                    >
-                      <MdDelete size={20} />
-                    </Button>
-                  </Tooltip>
-                </>
-              )}
-              <Link to={`/workouts/${workout.id}`}>
-                <img
-                  src={exerciseImage}
-                  alt="workoutImage"
-                  className="w-auto h-auto object-contain"
-                />
-              </Link>
+      <div className="mx-auto">
+        <SimpleGrid
+          cols={{ base: 1, sm: 2, md: 3 }}
+          spacing="xl"
+          className="mt-4 px-4 max-w-5xl text-center"
+        >
+          {workouts?.length > 0 ? (
+            workouts.map((workout) => (
+              <Card
+                key={workout.id}
+                shadow="md"
+                padding="xl"
+                radius="md"
+                withBorder
+                className=""
+              >
+                <Card.Section className="mb-5">
+                  <Link to={`/workouts/${workout.id}`}>
+                    <img
+                      src={exerciseImage}
+                      alt="workoutImage"
+                      className="max-h-48 w-auto object-contain block mx-auto"
+                    />
+                  </Link>
+                </Card.Section>
 
-              <Text fw={500}>{workout.name}</Text>
-              <Text size="sm" c="dimmed">
-                {workout.description}
-              </Text>
-            </Card>
-          ))
-        ) : (
-          <h1>No workouts found</h1>
-        )}
-      </SimpleGrid>
+                <Text fw={500}>{workout.name}</Text>
+                <Text size="sm" c="dimmed">
+                  {workout.description}
+                </Text>
+
+                {view == "public" ? (
+                  <>
+                    <Tooltip label="Save Workout" color="teal">
+                      <Button
+                        variant="subtle"
+                        color="gray"
+                        className="mx-auto"
+                        onClick={() => handleSaveWorkout(workout.id.toString())}
+                      >
+                        <CiBookmarkPlus size={30} />
+                      </Button>
+                    </Tooltip>
+                  </>
+                ) : (
+                  <>
+                    <Tooltip label="Delete Workout" color="red">
+                      <Button
+                        variant="subtle"
+                        color="gray"
+                        onClick={() =>
+                          handleDeleteUserWorkout(workout.id.toString())
+                        }
+                      >
+                        <MdDelete size={20} />
+                      </Button>
+                    </Tooltip>
+                  </>
+                )}
+              </Card>
+            ))
+          ) : (
+            <h1>No workouts found</h1>
+          )}
+        </SimpleGrid>
+      </div>
     </div>
   );
 };

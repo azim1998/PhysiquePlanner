@@ -195,6 +195,9 @@ namespace PhysiquePlanner.Api.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Duration = table.Column<int>(type: "int", nullable: true),
+                    Difficulty = table.Column<int>(type: "int", nullable: false),
+                    WorkoutType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsPrivate = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -263,18 +266,29 @@ namespace PhysiquePlanner.Api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "48581a7d-f41e-4824-8e6a-d724c01b3249", null, "User", "USER" },
-                    { "ceb1c549-0a8e-49c1-a450-2b39b5282906", null, "Admin", "ADMIN" }
+                    { "5f630073-ea94-4e21-9db9-786442d2f19c", null, "Admin", "ADMIN" },
+                    { "cc450300-0894-494e-a3e5-debc761f3e80", null, "User", "USER" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "00000000-0000-0000-0000-000000000001", 0, "561b05c4-a482-4c09-985b-d1eedcb34667", "System", true, false, null, "SYSTEM", "SYSTEM", "", null, false, "6de713fb-28ae-4b9b-bb9a-97496ac0be4c", false, "System" });
 
             migrationBuilder.InsertData(
                 table: "Exercises",
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Bench Press", "Bench Press" },
-                    { 2, "Squat", "Squat" },
-                    { 3, "Deadlift", "Deadlift" }
+                    { 1, "A compound movement to strengthen the chest, shoulders, and triceps.", "Bench Press" },
+                    { 2, "A bodyweight exercise to develop the back and biceps.", "Pull-Up" },
+                    { 3, "A fundamental lower-body exercise targeting quads, hamstrings, and glutes.", "Squat" },
+                    { 4, "A compound exercise to develop the posterior chain including back, glutes, and hamstrings.", "Deadlift" },
+                    { 5, "A shoulder press exercise that strengthens the deltoids and triceps.", "Overhead Press" },
+                    { 6, "An isolation exercise for the biceps.", "Barbell Curl" },
+                    { 7, "An isolation triceps exercise performed with a barbell or dumbbells.", "Skull Crushers" },
+                    { 8, "A lower-body exercise targeting the quads and glutes.", "Leg Press" },
+                    { 9, "A focused movement to develop the calves.", "Calf Raise" }
                 });
 
             migrationBuilder.InsertData(
@@ -282,9 +296,15 @@ namespace PhysiquePlanner.Api.Migrations
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Chest", "Chest" },
-                    { 2, "Legs", "Legs" },
-                    { 3, "Back", "Back" }
+                    { 1, "The pectoral muscles located on the front of the upper body.", "Chest" },
+                    { 2, "The large group of muscles that support the spine and shoulders.", "Back" },
+                    { 3, "The deltoid muscles covering the shoulder joint.", "Shoulders" },
+                    { 4, "The muscles located on the front of the upper arm.", "Biceps" },
+                    { 5, "The muscles on the back of the upper arm.", "Triceps" },
+                    { 6, "The four-part muscle group on the front of the thigh.", "Quads" },
+                    { 7, "The muscles on the back of the thigh.", "Hamstrings" },
+                    { 8, "The muscles on the back of the lower leg.", "Calves" },
+                    { 9, "The abdominal muscles located on the front of the torso.", "Abs" }
                 });
 
             migrationBuilder.InsertData(
@@ -293,8 +313,21 @@ namespace PhysiquePlanner.Api.Migrations
                 values: new object[,]
                 {
                     { 1, 1 },
+                    { 1, 3 },
+                    { 1, 5 },
                     { 2, 2 },
-                    { 3, 3 }
+                    { 2, 4 },
+                    { 3, 6 },
+                    { 3, 7 },
+                    { 4, 2 },
+                    { 4, 7 },
+                    { 5, 3 },
+                    { 5, 5 },
+                    { 6, 4 },
+                    { 7, 5 },
+                    { 8, 6 },
+                    { 8, 7 },
+                    { 9, 8 }
                 });
 
             migrationBuilder.CreateIndex(

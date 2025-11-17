@@ -65,6 +65,7 @@ namespace PhysiquePlanner.Api.Repositories
         public async Task<Workout> GetWorkoutByIdAsync(int workoutId)
         {
             return await _applicationDbContext.Workouts
+                .Include(w => w.ApplicationUser)
                 .Include(w => w.WorkoutExercises)
                 .ThenInclude(we => we.Exercise)
                 .FirstOrDefaultAsync(w => w.Id == workoutId);

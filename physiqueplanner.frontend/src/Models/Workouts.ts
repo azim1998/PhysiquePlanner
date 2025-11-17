@@ -6,21 +6,30 @@ export interface Workout {
     name: string
     description: string
     applicationUserId: string
+    duration: number
+    difficulty: number
+    workoutType: string
+    owner: string
     isPrivate: boolean
     workoutExercises: WorkoutExercise[]
-    applicationUser: ApplicationUser
 }
 
 export interface WorkoutCreationDto {
     name: string
     description: string
     isPrivate: boolean
+    duration?: number
+    difficulty?: number
+    workoutType?: string
 }
 
 export interface WorkoutUpdateDto {
     name?: string
     description?: string 
     isPrivate?: boolean
+    duration?: number
+    difficulty?: number
+    workoutType?: string
     workoutExercises?: ExerciseSelectionDto[]
 }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using PhysiquePlanner.Api.Data;
 using PhysiquePlanner.Api.Models;
 using PhysiquePlanner.Models;
 
@@ -44,7 +45,7 @@ namespace PhysiquePlanner.Data
                 .HasForeignKey(w => w.ApplicationUserId);
 
             base.OnModelCreating(builder);
-            //new ApplicationDbInitializer(builder).SeedData();
+            ApplicationDbInitializer.SeedData(builder);
         }
     }
 }

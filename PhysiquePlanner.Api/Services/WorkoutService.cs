@@ -60,7 +60,7 @@ namespace PhysiquePlanner.Api.Services
 
                 return Result<ICollection<Workout>>.Ok(workouts);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Result<ICollection<Workout>>.Fail("Failed to get workouts, please try again");
             }
@@ -128,6 +128,9 @@ namespace PhysiquePlanner.Api.Services
                     Name = sourceWorkout.Name,
                     Description = sourceWorkout.Description,
                     ApplicationUserId = userId,
+                    Duration = sourceWorkout.Duration,
+                    Difficulty = sourceWorkout.Difficulty,
+                    WorkoutType = sourceWorkout.WorkoutType,
                     WorkoutExercises = sourceWorkout.WorkoutExercises.Select(e => new WorkoutExercise
                     {
                         ExerciseId = e.ExerciseId,
@@ -160,6 +163,9 @@ namespace PhysiquePlanner.Api.Services
                     Name = sourceWorkout.Name,
                     Description = sourceWorkout.Description,
                     ApplicationUserId = SystemUser.Id,
+                    Duration = sourceWorkout.Duration,
+                    Difficulty = sourceWorkout.Difficulty,
+                    WorkoutType = sourceWorkout.WorkoutType,
                     WorkoutExercises = sourceWorkout.WorkoutExercises.Select(e => new WorkoutExercise
                     {
                         ExerciseId = e.ExerciseId,
@@ -212,7 +218,10 @@ namespace PhysiquePlanner.Api.Services
 
                 if (workoutUpdateDto.Name != null) workoutToUpdate.Name = workoutUpdateDto.Name;
                 if (workoutUpdateDto.Description != null) workoutToUpdate.Description = workoutUpdateDto.Description;
-                if (workoutUpdateDto.IsPrivate.HasValue) workoutToUpdate.IsPrivate = workoutUpdateDto.IsPrivate.Value;
+                if (workoutUpdateDto.IsPrivate.HasValue) workoutToUpdate.IsPrivate = workoutUpdateDto.IsPrivate.Value; //Remove
+                if (workoutUpdateDto.Difficulty.HasValue) workoutToUpdate.Difficulty = workoutUpdateDto.Difficulty.Value;
+                if (workoutUpdateDto.Duration.HasValue) workoutToUpdate.Duration = workoutUpdateDto.Duration.Value;
+                if (workoutUpdateDto.WorkoutType != null) workoutToUpdate.WorkoutType = workoutUpdateDto.WorkoutType;
 
                 if (workoutUpdateDto.WorkoutExercises.Count > 0)
                 {

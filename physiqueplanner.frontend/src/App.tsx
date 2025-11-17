@@ -19,7 +19,7 @@ function App() {
           <div className="mx-auto pt-4 sm:max-w-[700px] md:max-w-[1000px]">
           <Outlet />
           </div>
-          <ToastContainer />
+          <ToastContainer position="bottom-right" theme="dark"/>
         </AuthProvider>
       </MantineProvider>
     </>

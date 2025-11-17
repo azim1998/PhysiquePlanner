@@ -51,13 +51,13 @@ namespace PhysiquePlanner.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ceb1c549-0a8e-49c1-a450-2b39b5282906",
+                            Id = "5f630073-ea94-4e21-9db9-786442d2f19c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "48581a7d-f41e-4824-8e6a-d724c01b3249",
+                            Id = "cc450300-0894-494e-a3e5-debc761f3e80",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -232,6 +232,24 @@ namespace PhysiquePlanner.Api.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "00000000-0000-0000-0000-000000000001",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "561b05c4-a482-4c09-985b-d1eedcb34667",
+                            Email = "System",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "SYSTEM",
+                            NormalizedUserName = "SYSTEM",
+                            PasswordHash = "",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "6de713fb-28ae-4b9b-bb9a-97496ac0be4c",
+                            TwoFactorEnabled = false,
+                            UserName = "System"
+                        });
                 });
 
             modelBuilder.Entity("PhysiquePlanner.Models.Exercise", b =>
@@ -258,20 +276,56 @@ namespace PhysiquePlanner.Api.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "Bench Press",
+                            Description = "A compound movement to strengthen the chest, shoulders, and triceps.",
                             Name = "Bench Press"
                         },
                         new
                         {
                             Id = 2,
-                            Description = "Squat",
-                            Name = "Squat"
+                            Description = "A bodyweight exercise to develop the back and biceps.",
+                            Name = "Pull-Up"
                         },
                         new
                         {
                             Id = 3,
-                            Description = "Deadlift",
+                            Description = "A fundamental lower-body exercise targeting quads, hamstrings, and glutes.",
+                            Name = "Squat"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "A compound exercise to develop the posterior chain including back, glutes, and hamstrings.",
                             Name = "Deadlift"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "A shoulder press exercise that strengthens the deltoids and triceps.",
+                            Name = "Overhead Press"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "An isolation exercise for the biceps.",
+                            Name = "Barbell Curl"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Description = "An isolation triceps exercise performed with a barbell or dumbbells.",
+                            Name = "Skull Crushers"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Description = "A lower-body exercise targeting the quads and glutes.",
+                            Name = "Leg Press"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Description = "A focused movement to develop the calves.",
+                            Name = "Calf Raise"
                         });
                 });
 
@@ -297,13 +351,78 @@ namespace PhysiquePlanner.Api.Migrations
                         },
                         new
                         {
+                            ExerciseId = 1,
+                            MuscleId = 3
+                        },
+                        new
+                        {
+                            ExerciseId = 1,
+                            MuscleId = 5
+                        },
+                        new
+                        {
                             ExerciseId = 2,
                             MuscleId = 2
                         },
                         new
                         {
+                            ExerciseId = 2,
+                            MuscleId = 4
+                        },
+                        new
+                        {
                             ExerciseId = 3,
+                            MuscleId = 6
+                        },
+                        new
+                        {
+                            ExerciseId = 3,
+                            MuscleId = 7
+                        },
+                        new
+                        {
+                            ExerciseId = 4,
+                            MuscleId = 2
+                        },
+                        new
+                        {
+                            ExerciseId = 4,
+                            MuscleId = 7
+                        },
+                        new
+                        {
+                            ExerciseId = 5,
                             MuscleId = 3
+                        },
+                        new
+                        {
+                            ExerciseId = 5,
+                            MuscleId = 5
+                        },
+                        new
+                        {
+                            ExerciseId = 6,
+                            MuscleId = 4
+                        },
+                        new
+                        {
+                            ExerciseId = 7,
+                            MuscleId = 5
+                        },
+                        new
+                        {
+                            ExerciseId = 8,
+                            MuscleId = 6
+                        },
+                        new
+                        {
+                            ExerciseId = 8,
+                            MuscleId = 7
+                        },
+                        new
+                        {
+                            ExerciseId = 9,
+                            MuscleId = 8
                         });
                 });
 
@@ -331,20 +450,56 @@ namespace PhysiquePlanner.Api.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "Chest",
+                            Description = "The pectoral muscles located on the front of the upper body.",
                             Name = "Chest"
                         },
                         new
                         {
                             Id = 2,
-                            Description = "Legs",
-                            Name = "Legs"
+                            Description = "The large group of muscles that support the spine and shoulders.",
+                            Name = "Back"
                         },
                         new
                         {
                             Id = 3,
-                            Description = "Back",
-                            Name = "Back"
+                            Description = "The deltoid muscles covering the shoulder joint.",
+                            Name = "Shoulders"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "The muscles located on the front of the upper arm.",
+                            Name = "Biceps"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "The muscles on the back of the upper arm.",
+                            Name = "Triceps"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "The four-part muscle group on the front of the thigh.",
+                            Name = "Quads"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Description = "The muscles on the back of the thigh.",
+                            Name = "Hamstrings"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Description = "The muscles on the back of the lower leg.",
+                            Name = "Calves"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Description = "The abdominal muscles located on the front of the torso.",
+                            Name = "Abs"
                         });
                 });
 
@@ -364,10 +519,20 @@ namespace PhysiquePlanner.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Difficulty")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Duration")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsPrivate")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WorkoutType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

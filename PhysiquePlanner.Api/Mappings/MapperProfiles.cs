@@ -17,6 +17,7 @@ namespace PhysiquePlanner.Mappings
             CreateMap<Muscle, MuscleDto>();
 
             CreateMap<Workout, WorkoutDto>()
+                .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.ApplicationUser.UserName))
                 .ForMember(dest => dest.WorkoutExercises, opt => opt.MapFrom(src => src.WorkoutExercises));
 
             CreateMap<WorkoutCreationDto, Workout>();

@@ -3,6 +3,7 @@ import {
   Card,
   Group,
   Image,
+  Rating,
   SegmentedControl,
   SimpleGrid,
   Switch,
@@ -30,41 +31,54 @@ import { create } from "domain";
 import CreateItemModal from "../../Components/CreateItemModal/CreateItemModal";
 import { CiBookmarkPlus } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
+import { LuBicepsFlexed, LuFileSearch } from "react-icons/lu";
+import PageLoader from "../../Components/PageLoader/PageLoader";
+import { useAuth } from "../../Context/AuthContext";
 
 interface Props {}
 
 const WorkoutsPage = (props: Props) => {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [view, setView] = useState<string>("public");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [createWorkoutModalOpened, createWorkoutModalHandlers] =
     useDisclosure(false);
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
 
   useEffect(() => {
-    console.log(view);
-    console.log(workouts);
+    setIsLoading(true);
     view == "public"
       ? GetAllPublicWorkoutsAPI()
           .then((response) => {
-            if (response?.data) {
+            if (response?.success && response?.data) {
               setWorkouts(response.data);
+              setIsLoading(false);
             } else {
               toast.warn("No workouts found");
+              setWorkouts([]);
+              setIsLoading(false);
             }
           })
           .catch((e) => {
             toast.warn("Failed to get workouts");
+            setIsLoading(false);
           })
       : GetUserWorkoutsAPI()
           .then((response) => {
-            if (response?.data) {
+            if (response?.success && response?.data) {
               setWorkouts(response.data);
+              setIsLoading(false);
             } else {
               toast.warn("No workouts found");
+              setWorkouts([]);
+              setIsLoading(false);
             }
           })
           .catch((e) => {
             toast.warn("Failed to get workouts");
+            setWorkouts([]);
+            setIsLoading(false);
           });
   }, [view]);
 
@@ -72,25 +86,35 @@ const WorkoutsPage = (props: Props) => {
     view == "public"
       ? GetPublicWorkoutsByNameAPI(search)
           .then((response) => {
-            if (response?.data) {
+            if (response?.success && response?.data) {
               setWorkouts(response.data);
+              setIsLoading(false);
             } else {
               toast.warning("No workouts found");
+              setWorkouts([]);
+              setIsLoading(false);
             }
           })
           .catch((e) => {
             toast.warn("Failed to get workouts");
+            setWorkouts([]);
+            setIsLoading(false);
           })
       : GetUserWorkoutsByNameAPI(search)
           .then((response) => {
-            if (response?.data) {
+            if (response?.success && response?.data) {
               setWorkouts(response.data);
+              setIsLoading(false);
             } else {
               toast.warning("No workouts found");
+              setWorkouts([]);
+              setIsLoading(false);
             }
           })
           .catch((e) => {
             toast.warn("Failed to get workouts");
+            setWorkouts([]);
+            setIsLoading(false);
           });
   };
 
@@ -147,13 +171,17 @@ const WorkoutsPage = (props: Props) => {
             Workouts
           </h1>
 
-          <Button
-            radius="md"
-            color="teal"
-            onClick={() => createWorkoutModalHandlers.open()}
-          >
-            Create Workout
-          </Button>
+          {isLoggedIn() ? (
+            <Button
+              radius="md"
+              color="teal"
+              onClick={() => createWorkoutModalHandlers.open()}
+            >
+              Create Workout
+            </Button>
+          ) : (
+            <div className="w-36"></div>
+          )}
 
           <CreateItemModal
             opened={createWorkoutModalOpened}
@@ -173,72 +201,90 @@ const WorkoutsPage = (props: Props) => {
 
         <Search onSearch={onSearchSubmit} placeholder="Search Workouts" />
       </div>
-      <div className="mx-auto">
-        <SimpleGrid
-          cols={{ base: 1, sm: 2, md: 3 }}
-          spacing="xl"
-          className="mt-4 px-4 max-w-5xl text-center"
-        >
+
+      {isLoading ? (
+        <PageLoader />
+      ) : (
+        <div className="mx-auto">
           {workouts?.length > 0 ? (
-            workouts.map((workout) => (
-              <Card
-                key={workout.id}
-                shadow="md"
-                padding="xl"
-                radius="md"
-                withBorder
-                className=""
-              >
-                <Card.Section className="mb-5">
-                  <Link to={`/workouts/${workout.id}`}>
-                    <img
-                      src={exerciseImage}
-                      alt="workoutImage"
-                      className="max-h-48 w-auto object-contain block mx-auto"
-                    />
-                  </Link>
-                </Card.Section>
+            <SimpleGrid
+              cols={{ base: 1, sm: 2, md: 3 }}
+              spacing="xl"
+              className="mt-4 px-4 max-w-5xl text-center"
+            >
+              {workouts.map((workout) => (
+                <Card
+                  key={workout.id}
+                  shadow="md"
+                  padding="xl"
+                  radius="md"
+                  withBorder
+                  className="flex items-center"
+                >
+                  <Card.Section className="mb-5">
+                    <Link to={`/workouts/${workout.id}`}>
+                      <img
+                        src={exerciseImage}
+                        alt="workoutImage"
+                        className="max-h-48 w-auto object-contain block mx-auto"
+                      />
+                    </Link>
+                  </Card.Section>
 
-                <Text fw={500}>{workout.name}</Text>
-                <Text size="sm" c="dimmed">
-                  {workout.description}
-                </Text>
+                  <h1 className="font-bold">{workout.name}</h1>
+                  <h1>{workout.description}</h1>
 
-                {view == "public" ? (
-                  <>
-                    <Tooltip label="Save Workout" color="teal">
-                      <Button
-                        variant="subtle"
-                        color="gray"
-                        className="mx-auto"
-                        onClick={() => handleSaveWorkout(workout.id.toString())}
-                      >
-                        <CiBookmarkPlus size={30} />
-                      </Button>
-                    </Tooltip>
-                  </>
-                ) : (
-                  <>
-                    <Tooltip label="Delete Workout" color="red">
-                      <Button
-                        variant="subtle"
-                        color="gray"
-                        onClick={() =>
-                          handleDeleteUserWorkout(workout.id.toString())
-                        }
-                      >
-                        <MdDelete size={20} />
-                      </Button>
-                    </Tooltip>
-                  </>
-                )}
-              </Card>
-            ))
+                  <div className="flex flex-row items-center gap-2">
+                    <h1 className="font-semibold">Difficulty:</h1>
+                    <Rating value={workout.difficulty} />
+                  </div>
+
+                  <div className="flex flex-row items-center gap-2">
+                    <LuBicepsFlexed />
+                    <h1>{workout.workoutType}</h1>
+                  </div>
+
+                  {view == "public" ? (
+                    <>
+                      <Tooltip label="Save Workout" color="teal">
+                        <Button
+                          variant="subtle"
+                          color="gray"
+                          className="mx-auto"
+                          onClick={() =>
+                            handleSaveWorkout(workout.id.toString())
+                          }
+                        >
+                          <CiBookmarkPlus size={30} />
+                        </Button>
+                      </Tooltip>
+                    </>
+                  ) : (
+                    <>
+                      <Tooltip label="Delete Workout" color="red">
+                        <Button
+                          variant="subtle"
+                          color="gray"
+                          onClick={() =>
+                            handleDeleteUserWorkout(workout.id.toString())
+                          }
+                        >
+                          <MdDelete size={20} />
+                        </Button>
+                      </Tooltip>
+                    </>
+                  )}
+                </Card>
+              ))}
+            </SimpleGrid>
           ) : (
-            <h1>No workouts found</h1>
+            <div className="flex flex-col items-center justify-center text-center py-10 mx-auto">
+              <LuFileSearch size={60} className="mb-2 text-gray-500" />
+              <h1 className="font-bold text-xl">No workouts found</h1>
+            </div>
           )}
-        </SimpleGrid>
-      </div>
+        </div>
+      )}
     </div>
   );
 };

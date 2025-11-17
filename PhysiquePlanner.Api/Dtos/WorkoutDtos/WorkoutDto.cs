@@ -8,6 +8,10 @@ namespace PhysiquePlanner.Api.Dtos.WorkoutDtos
         public string Name { get; set; }
         public string Description { get; set; }
         public bool IsPrivate { get; set; }
+        public int Duration { get; set; }
+        public int Difficulty { get; set; }
+        public string WorkoutType { get; set; } = "";
+        public string Owner { get; set; } = "";
         public ICollection<WorkoutExerciseDto> WorkoutExercises { get; set; }
     }
 }

@@ -34,6 +34,7 @@ import { MdDelete } from "react-icons/md";
 import { LuBicepsFlexed, LuFileSearch } from "react-icons/lu";
 import PageLoader from "../../Components/PageLoader/PageLoader";
 import { useAuth } from "../../Context/AuthContext";
+import { FaSave } from "react-icons/fa";
 
 interface Props {}
 
@@ -121,8 +122,7 @@ const WorkoutsPage = (props: Props) => {
   const handleCreateWorkout = (newItem: WorkoutCreationDto) => {
     const newWorkout: WorkoutCreationDto = {
       name: newItem.name,
-      description: newItem.description,
-      isPrivate: newItem.isPrivate,
+      description: newItem.description
     };
 
     CreateWorkoutAPI(newWorkout).then((response) => {
@@ -255,7 +255,7 @@ const WorkoutsPage = (props: Props) => {
                             handleSaveWorkout(workout.id.toString())
                           }
                         >
-                          <CiBookmarkPlus size={30} />
+                          <FaSave size={30} />
                         </Button>
                       </Tooltip>
                     </>

@@ -198,7 +198,7 @@ namespace PhysiquePlanner.Api.Migrations
                     Duration = table.Column<int>(type: "int", nullable: true),
                     Difficulty = table.Column<int>(type: "int", nullable: false),
                     WorkoutType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsPrivate = table.Column<bool>(type: "bit", nullable: false)
+                    IsPublished = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -266,14 +266,14 @@ namespace PhysiquePlanner.Api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "5f630073-ea94-4e21-9db9-786442d2f19c", null, "Admin", "ADMIN" },
-                    { "cc450300-0894-494e-a3e5-debc761f3e80", null, "User", "USER" }
+                    { "8cf68868-4d97-4cde-b537-89a09455844f", null, "User", "USER" },
+                    { "ab5f8f99-bce4-4c2a-a5b8-de606049305d", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "00000000-0000-0000-0000-000000000001", 0, "561b05c4-a482-4c09-985b-d1eedcb34667", "System", true, false, null, "SYSTEM", "SYSTEM", "", null, false, "6de713fb-28ae-4b9b-bb9a-97496ac0be4c", false, "System" });
+                values: new object[] { "00000000-0000-0000-0000-000000000001", 0, "543782ec-e3b9-43f6-9db6-4038c98e3914", "System", true, false, null, "SYSTEM", "SYSTEM", "", null, false, "a6f9aa69-d851-4eec-b3e8-bf38c0d0443e", false, "System" });
 
             migrationBuilder.InsertData(
                 table: "Exercises",

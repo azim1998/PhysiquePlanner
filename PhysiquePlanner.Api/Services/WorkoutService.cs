@@ -158,6 +158,9 @@ namespace PhysiquePlanner.Api.Services
                 if (sourceWorkout == null)
                     return Result<Workout>.Fail("Workout does not exist");
 
+                if (sourceWorkout.IsPublished)
+                    return Result<Workout>.Fail("Workout has already been shared");
+
                 var sharedWorkout = new Workout
                 {
                     Name = sourceWorkout.Name,
@@ -166,6 +169,7 @@ namespace PhysiquePlanner.Api.Services
                     Duration = sourceWorkout.Duration,
                     Difficulty = sourceWorkout.Difficulty,
                     WorkoutType = sourceWorkout.WorkoutType,
+                    IsPublished = true,
                     WorkoutExercises = sourceWorkout.WorkoutExercises.Select(e => new WorkoutExercise
                     {
                         ExerciseId = e.ExerciseId,
@@ -175,6 +179,9 @@ namespace PhysiquePlanner.Api.Services
                 };
 
                 var created = await _workoutRepository.CreateWorkoutAsync(sharedWorkout);
+
+                sourceWorkout.IsPublished = true;
+                await _workoutRepository.UpdateWorkoutAsync(sourceWorkout);
 
                 return Result<Workout>.Ok(created, "Workout shared successfully");
             }
@@ -218,7 +225,6 @@ namespace PhysiquePlanner.Api.Services
 
                 if (workoutUpdateDto.Name != null) workoutToUpdate.Name = workoutUpdateDto.Name;
                 if (workoutUpdateDto.Description != null) workoutToUpdate.Description = workoutUpdateDto.Description;
-                if (workoutUpdateDto.IsPrivate.HasValue) workoutToUpdate.IsPrivate = workoutUpdateDto.IsPrivate.Value; //Remove
                 if (workoutUpdateDto.Difficulty.HasValue) workoutToUpdate.Difficulty = workoutUpdateDto.Difficulty.Value;
                 if (workoutUpdateDto.Duration.HasValue) workoutToUpdate.Duration = workoutUpdateDto.Duration.Value;
                 if (workoutUpdateDto.WorkoutType != null) workoutToUpdate.WorkoutType = workoutUpdateDto.WorkoutType;
@@ -235,6 +241,8 @@ namespace PhysiquePlanner.Api.Services
                         }
                     }
                 }
+
+                workoutToUpdate.IsPublished = false;
 
                 var updated = await _workoutRepository.UpdateWorkoutAsync(workoutToUpdate);
                 return Result<Workout>.Ok(updated, "Workout updated successfully");

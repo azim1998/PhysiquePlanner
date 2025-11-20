@@ -10,14 +10,13 @@ export interface Workout {
     difficulty: number
     workoutType: string
     owner: string
-    isPrivate: boolean
+    isPublished: boolean
     workoutExercises: WorkoutExercise[]
 }
 
 export interface WorkoutCreationDto {
     name: string
     description: string
-    isPrivate: boolean
     duration?: number
     difficulty?: number
     workoutType?: string
@@ -26,7 +25,6 @@ export interface WorkoutCreationDto {
 export interface WorkoutUpdateDto {
     name?: string
     description?: string 
-    isPrivate?: boolean
     duration?: number
     difficulty?: number
     workoutType?: string

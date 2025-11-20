@@ -121,6 +121,7 @@ namespace PhysiquePlanner.Api.Controllers
             //return CreatedAtAction(nameof(GetWorkout), new { workoutId = workoutDto.Id }, workoutDto);
         }
 
+        [Authorize]
         [HttpPost("{workoutId}/share")]
         public async Task<IActionResult> ShareWorkout([FromRoute] int workoutId)
         {
@@ -129,7 +130,7 @@ namespace PhysiquePlanner.Api.Controllers
             return ReturnResult<Workout, WorkoutDto>(result);
         }
 
-
+        [Authorize]
         [HttpPost("{workoutId}/save")]
         public async Task<IActionResult> SaveWorkout([FromRoute] int workoutId)
         {
@@ -144,6 +145,7 @@ namespace PhysiquePlanner.Api.Controllers
             return ReturnResult<Workout, WorkoutDto>(result);
         }
 
+        [Authorize]
         [HttpPut("{workoutId}")]
         public async Task<IActionResult> UpdateWorkout([FromRoute] int workoutId, [FromBody] WorkoutUpdateDto workoutUpdateDto)
         {
@@ -155,6 +157,7 @@ namespace PhysiquePlanner.Api.Controllers
             return ReturnResult<Workout, WorkoutDto>(result);
         }
 
+        [Authorize]
         [HttpPatch("{workoutId}")]
         public async Task<IActionResult> PatchWorkout([FromRoute] int workoutId, [FromBody] WorkoutUpdateDto workoutUpdateDto)
         {
@@ -166,6 +169,7 @@ namespace PhysiquePlanner.Api.Controllers
             return ReturnResult<Workout, WorkoutDto>(result);
         }
 
+        [Authorize]
         [HttpPost("{workoutId}/exercises")]
         public async Task<IActionResult> AddExercisesToWorkout([FromRoute] int workoutId, [FromBody] AddExercisesToWorkoutDto exerciseIds)
         {
@@ -177,6 +181,7 @@ namespace PhysiquePlanner.Api.Controllers
             return ReturnResult<Workout, WorkoutDto>(result);
         }
 
+        [Authorize]
         [HttpDelete("{workoutId}")]
         public async Task<IActionResult> DeleteWorkout([FromRoute] int workoutId)
         {
@@ -185,6 +190,7 @@ namespace PhysiquePlanner.Api.Controllers
             return ReturnNoDataResult(result);
         }
 
+        [Authorize]
         [HttpDelete("{workoutId}/exercises/{exerciseId}")]
         public async Task<IActionResult> RemoveExerciseFromWorkout([FromRoute] int workoutId, [FromRoute] int exerciseId)
         {

@@ -5,6 +5,7 @@ import {
   GetWorkoutAPI,
   PartiallyUpdateWorkoutAPI,
   RemoveExerciseFromWorkoutAPI,
+  SaveWorkoutAPI,
   ShareWorkoutAPI,
 } from "../../Services/WorkoutsService";
 import { toast } from "react-toastify";
@@ -25,13 +26,14 @@ import { useDisclosure } from "@mantine/hooks";
 import AddExerciseModal from "../../Components/AddExerciseModal/AddExerciseModal";
 import { MdDelete } from "react-icons/md";
 import { FaShareFromSquare } from "react-icons/fa6";
-import { FaClock, FaRegUser } from "react-icons/fa";
+import { FaClock, FaRegUser, FaSave, FaShare } from "react-icons/fa";
 import { LuBicepsFlexed, LuFileSearch } from "react-icons/lu";
 import RemoveItemModal from "../../Components/RemoveItemModal/RemoveItemModal";
 import { WorkoutExercise } from "../../Models/WorkoutExercise";
 import ExerciseInput from "../../Components/ExerciseInput/ExerciseInput";
 import EditableText from "../../Components/EditableText/EditableText";
 import PageLoader from "../../Components/PageLoader/PageLoader";
+import { CiBookmarkPlus } from "react-icons/ci";
 
 interface Props {}
 
@@ -43,6 +45,7 @@ const WorkoutDetailPage = (props: Props) => {
     useDisclosure(false);
   const [removeExerciseModalOpened, removeExerciseModalHandlers] =
     useDisclosure(false);
+  const isReadOnly = workout?.owner === "System";
 
   const fetchExercises = () => {
     setIsLoading(true);
@@ -136,7 +139,6 @@ const WorkoutDetailPage = (props: Props) => {
   };
 
   const handleDifficultyChange = (newDifficulty: number) => {
-    console.log(workout?.workoutType);
     setWorkout((prev) =>
       prev
         ? {
@@ -146,7 +148,6 @@ const WorkoutDetailPage = (props: Props) => {
         : prev
     );
 
-    console.log(workout?.workoutType);
     const updatedWorkout: WorkoutUpdateDto = {
       difficulty: newDifficulty,
     };
@@ -190,11 +191,28 @@ const WorkoutDetailPage = (props: Props) => {
   };
 
   const handleShareWorkout = () => {
-    ShareWorkoutAPI(workoutId!).then((response) => {
-      if (response?.success) {
-        toast.success("Workout shared successfully");
+    if (workout?.isPublished) {
+      toast.warn(
+        "Workout has already been shared, please update and try again"
+      );
+    } else {
+      ShareWorkoutAPI(workoutId!).then((response) => {
+        if (response?.success) {
+          toast.success("Workout shared successfully");
+        } else {
+          toast.warn("Workout could not be shared");
+        }
+      });
+    }
+  };
+
+  const handleSaveWorkout = (workoutId: string) => {
+    SaveWorkoutAPI(workoutId).then((response) => {
+      if (response?.success && response.data) {
+        toast.success("Workout saved to My Workouts");
+        //Do I need data
       } else {
-        toast.warn("Workout could not be shared");
+        toast.warn("Workout could not be saved");
       }
     });
   };
@@ -214,21 +232,40 @@ const WorkoutDetailPage = (props: Props) => {
             <div>
               <div className="flex flex-row pb-2">
                 <EditableText
-                  className="!font-bold !text-3xl"
+                  className="!font-bold !text-3xl !w-fit"
                   editableText={workout?.name!}
                   onSave={(newName) => handleNameChange(newName)}
+                  isReadOnly={isReadOnly}
                 />
-                <Button
-                  className="ml-auto"
-                  onClick={() => handleShareWorkout()}
-                >
-                  <FaShareFromSquare size={20} />
-                </Button>
+                {isReadOnly ? (
+                  <Tooltip label="Save Workout" color="teal">
+                    <Button
+                      variant="subtle"
+                      color="gray"
+                      className="ml-auto"
+                      onClick={() => handleSaveWorkout(workout.id.toString())}
+                    >
+                      <FaSave size={30} />
+                    </Button>
+                  </Tooltip>
+                ) : (
+                  <Tooltip label="Share Workout" color="teal">
+                    <Button
+                      className="ml-auto"
+                      variant="subtle"
+                      color="gray"
+                      onClick={() => handleShareWorkout()}
+                    >
+                      <FaShare size={20} />
+                    </Button>
+                  </Tooltip>
+                )}
               </div>
               <EditableText
-                className="!text-lg !pb-3 !flex"
+                className="!text-lg !flex !w-fit"
                 editableText={workout?.description!}
                 onSave={(newDesc) => handleDescriptionChange(newDesc)}
+                isReadOnly={isReadOnly}
               />
               <div className="flex items-center">
                 <h1 className="text-lg pr-2">Difficulty:</h1>
@@ -237,6 +274,7 @@ const WorkoutDetailPage = (props: Props) => {
                   onChange={(newDifficulty) =>
                     handleDifficultyChange(newDifficulty)
                   }
+                  readOnly={isReadOnly}
                 />
               </div>
               <Group>
@@ -245,6 +283,7 @@ const WorkoutDetailPage = (props: Props) => {
                 <ExerciseInput
                   draftItem={workout.duration}
                   onSave={(newDuration) => handleDurationChange(newDuration)}
+                  isReadOnly={isReadOnly}
                 />
 
                 <LuBicepsFlexed size={20} className="ml-5" />
@@ -254,9 +293,8 @@ const WorkoutDetailPage = (props: Props) => {
                   allowDeselect={false}
                   value={workout.workoutType}
                   onChange={(newType) => handleWorkoutTypeChange(newType!)}
+                  disabled={isReadOnly}
                 />
-                <FaRegUser size={20} className="ml-5" />
-                <h1>Creator: {workout?.owner}</h1>
               </Group>
               <Group></Group>
 
@@ -312,6 +350,7 @@ const WorkoutDetailPage = (props: Props) => {
                                 sets: updatedSets,
                               })
                             }
+                            isReadOnly={isReadOnly}
                           />
                           <Text size="md" c="dimmed">
                             SETS
@@ -320,7 +359,7 @@ const WorkoutDetailPage = (props: Props) => {
 
                         <GridCol
                           span="content"
-                          className="flex flex-col items-center justify-center border-r border-gray-300"
+                          className="flex flex-col items-center justify-center"
                         >
                           <ExerciseInput
                             draftItem={exercise.reps}
@@ -330,21 +369,10 @@ const WorkoutDetailPage = (props: Props) => {
                                 reps: updatedReps,
                               })
                             }
+                            isReadOnly={isReadOnly}
                           />
                           <Text size="md" c="dimmed">
                             REPS
-                          </Text>
-                        </GridCol>
-
-                        <GridCol
-                          span="content"
-                          className="flex flex-col items-center justify-center"
-                        >
-                          <Text fw={700} size="xl">
-                            Add this?
-                          </Text>
-                          <Text size="md" c="dimmed">
-                            REST
                           </Text>
                         </GridCol>
 
@@ -359,15 +387,17 @@ const WorkoutDetailPage = (props: Props) => {
                               )
                             }
                           />
-                          <Tooltip label="Remove Exercise" color="gray">
-                            <Button
-                              variant="subtle"
-                              color="gray"
-                              onClick={removeExerciseModalHandlers.open}
-                            >
-                              <MdDelete size={20} />
-                            </Button>
-                          </Tooltip>
+                          {!isReadOnly && (
+                            <Tooltip label="Remove Exercise" color="gray">
+                              <Button
+                                variant="subtle"
+                                color="gray"
+                                onClick={removeExerciseModalHandlers.open}
+                              >
+                                <MdDelete size={20} />
+                              </Button>
+                            </Tooltip>
+                          )}
                         </GridCol>
                       </div>
                     </Grid>
@@ -381,9 +411,11 @@ const WorkoutDetailPage = (props: Props) => {
                   close={addExerciseModalHandlers.close}
                   onExerciseAdded={() => fetchExercises()}
                 />
-                <Button mt={10} onClick={addExerciseModalHandlers.open}>
-                  + Add Exercise
-                </Button>
+                {!isReadOnly && (
+                  <Button mt={10} onClick={addExerciseModalHandlers.open}>
+                    + Add Exercise
+                  </Button>
+                )}
               </div>
             </div>
           ) : (

@@ -51,13 +51,13 @@ namespace PhysiquePlanner.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5f630073-ea94-4e21-9db9-786442d2f19c",
+                            Id = "ab5f8f99-bce4-4c2a-a5b8-de606049305d",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "cc450300-0894-494e-a3e5-debc761f3e80",
+                            Id = "8cf68868-4d97-4cde-b537-89a09455844f",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -238,7 +238,7 @@ namespace PhysiquePlanner.Api.Migrations
                         {
                             Id = "00000000-0000-0000-0000-000000000001",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "561b05c4-a482-4c09-985b-d1eedcb34667",
+                            ConcurrencyStamp = "543782ec-e3b9-43f6-9db6-4038c98e3914",
                             Email = "System",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -246,7 +246,7 @@ namespace PhysiquePlanner.Api.Migrations
                             NormalizedUserName = "SYSTEM",
                             PasswordHash = "",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6de713fb-28ae-4b9b-bb9a-97496ac0be4c",
+                            SecurityStamp = "a6f9aa69-d851-4eec-b3e8-bf38c0d0443e",
                             TwoFactorEnabled = false,
                             UserName = "System"
                         });
@@ -525,7 +525,7 @@ namespace PhysiquePlanner.Api.Migrations
                     b.Property<int?>("Duration")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsPrivate")
+                    b.Property<bool>("IsPublished")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")

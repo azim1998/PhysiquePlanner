@@ -11,6 +11,9 @@ import { toast } from "react-toastify";
 import exerciseImage from "../../Assets/dumbbell.png";
 import { AddExercisesToWorkoutApi } from "../../Services/WorkoutsService";
 import { AddExercisesToWorkoutDto } from "../../Models/Workouts";
+import { FaPlus } from "react-icons/fa";
+import { TiTick } from "react-icons/ti";
+import { LuFileSearch } from "react-icons/lu";
 
 interface Props {
   workoutId: number;
@@ -19,21 +22,28 @@ interface Props {
   onExerciseAdded: () => void;
 }
 
-const AddExerciseModal = ({ workoutId, opened, close, onExerciseAdded }: Props) => {
+const AddExerciseModal = ({
+  workoutId,
+  opened,
+  close,
+  onExerciseAdded,
+}: Props) => {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [clicked, setClicked] = useState<{ [id: number]: boolean }>({});
 
-  const onSearchSubmit = (search: string) => {
+const onSearchSubmit = (search: string) => {
     GetExercisesByNameAPI(search)
       .then((response) => {
-        if (response?.data) {
+        if (response?.success && response?.data) {
           setExercises(response.data);
         } else {
-          toast.warn("No exercises found");
+          toast.warning("No exercises found");
+          setExercises([])
         }
       })
-      .catch((error) => {
-        toast.warn("Failed to get exercies");
+      .catch((e) => {
+        toast.warning("Failed to get exercises");
+        setExercises([])
       });
   };
 
@@ -66,20 +76,24 @@ const AddExerciseModal = ({ workoutId, opened, close, onExerciseAdded }: Props) 
       });
 
     close();
-    setClicked(prev => Object.fromEntries(Object.keys(prev).map(key => [key, false])))
+    setClicked((prev) =>
+      Object.fromEntries(Object.keys(prev).map((key) => [key, false]))
+    );
   };
 
   useEffect(() => {
     GetAllExercisesAPI()
       .then((response) => {
-        if (response?.data) {
+        if (response?.success && response?.data) {
           setExercises(response.data);
         } else {
-          toast.warn("No exercises found");
+          toast.warning("No exercises found");
+          setExercises([]);
         }
       })
-      .catch((error) => {
-        toast.warn("Failed to get exercises");
+      .catch((e) => {
+        toast.warning("Failed to get exercises");
+        setExercises([]);
       });
   }, []);
 
@@ -96,30 +110,39 @@ const AddExerciseModal = ({ workoutId, opened, close, onExerciseAdded }: Props) 
         <Search onSearch={onSearchSubmit} placeholder="Search Exercise" />
 
         <div className="mt-4 flex-col">
-          {exercises.map((exercise) => (
-            <Card
-              key={exercise.id}
-              shadow="md"
-              padding="xl"
-              radius="md"
-              withBorder
-              className="mb-10"
-            >
-              <div className="flex flex-row items-center">
-                <img src={exerciseImage} className="h-20 w-20 mr-4" />
-                <h1 className="font-bold">{exercise.name}</h1>
-                <Button
-                  className="ml-auto text-xl pb-1 font-mono"
-                  bg={clicked[exercise.id] ? "green" : "blue"}
-                  radius="xl"
-                  size="xs"
-                  onClick={() => SetClickedExercise(exercise.id)}
+          {exercises.length > 0 ? (
+            <>
+              {exercises.map((exercise) => (
+                <Card
+                  key={exercise.id}
+                  shadow="md"
+                  padding="xl"
+                  radius="md"
+                  withBorder
+                  className="mb-10"
                 >
-                  {clicked[exercise.id] ? "✓" : "+"}
-                </Button>
-              </div>
-            </Card>
-          ))}
+                  <div className="flex flex-row items-center">
+                    <img src={exerciseImage} className="h-20 w-20 mr-4" />
+                    <h1 className="font-bold">{exercise.name}</h1>
+                    <Button
+                      className="ml-auto text-xl pb-1 font-mono"
+                      bg={clicked[exercise.id] ? "green" : "blue"}
+                      radius="xl"
+                      size="xs"
+                      onClick={() => SetClickedExercise(exercise.id)}
+                    >
+                      {clicked[exercise.id] ? <TiTick /> : <FaPlus />}
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center text-center py-10 mx-auto">
+              <LuFileSearch size={60} className="mb-2 text-gray-500" />
+              <h1 className="font-bold text-xl">No exercises found</h1>
+            </div>
+          )}
 
           <div className="flex justify-end">
             <Button bg="red" onClick={() => AddExercisesToWorkout()}>

@@ -11,7 +11,7 @@ namespace PhysiquePlanner.Models
         public int? Duration { get; set; }
         public int Difficulty { get; set; }
         public string WorkoutType { get; set; } = "";
-        public bool IsPrivate { get; set; } = false; //Remove? make it ispublished instead
+        public bool IsPublished { get; set; } = false;
 
 
 

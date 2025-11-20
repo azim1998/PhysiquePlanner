@@ -4,9 +4,10 @@ import { NumberInput } from "@mantine/core";
 interface Props {
   draftItem: string | number;
   onSave: (updatedItem: number) => void;
+  isReadOnly: boolean
 }
 
-const ExerciseInput = ({ draftItem, onSave }: Props) => {
+const ExerciseInput = ({ draftItem, onSave, isReadOnly }: Props) => {
   const [draft, setDraft] = useState<string | number>(draftItem);
 
   return (
@@ -21,6 +22,7 @@ const ExerciseInput = ({ draftItem, onSave }: Props) => {
         onKeyDown={(e) => e.key === "Enter" && onSave(Number(draft))
         }
         onBlur={() => onSave(Number(draft))}
+        disabled={isReadOnly}
       />
     </div>
   );

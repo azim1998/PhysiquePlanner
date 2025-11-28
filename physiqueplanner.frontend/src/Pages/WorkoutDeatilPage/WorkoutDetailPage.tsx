@@ -318,7 +318,6 @@ const WorkoutDetailPage = (props: Props) => {
                           <Text size="lg" fw={500}>
                             {exercise.exerciseName}
                           </Text>
-                          <Text td="line-through">Equipment: Add this??</Text>
                           <Link to={`/exercises/${exercise.exerciseId}`}>
                             <Text td="underline" fs="italic">
                               View Details

@@ -1,9 +1,7 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { LoginUserAPI } from "../../Services/AccountsService";
 import { useAuth } from "../../Context/AuthContext";
 import { Link } from "react-router-dom";
-
-interface Props {}
+import { Button, Card, TextInput, PasswordInput } from "@mantine/core";
 
 interface RegisterFormInput {
   userName: string;
@@ -11,56 +9,53 @@ interface RegisterFormInput {
   password: string;
 }
 
-const RegisterPage = (props: Props) => {
+const RegisterPage = () => {
   const { register, handleSubmit } = useForm<RegisterFormInput>();
-  const { user, registerUser } = useAuth();
+  const { registerUser } = useAuth();
+
   const onSubmit: SubmitHandler<RegisterFormInput> = (data) => {
     registerUser(data.userName, data.email, data.password);
   };
 
   return (
-    <div>
-      <div className="flex justify-center mt-10">
-        <div className="border p-6 w-fit rounded shadow-md bg-white">
-          <h1 className="text-center text-5xl font-semibold py-4">
-            Register Page
-          </h1>
-          <form
-            className="flex flex-col gap-3 mb-5"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <input
-              className="border rounded-lg pl-2"
-              {...register("userName")}
-              placeholder="User Name"
-            />
-            <input
-              className="border rounded-lg pl-2"
-              {...register("email")}
-              placeholder="Email Address"
-            />
-            <input
-              className="border rounded-lg pl-2"
-              {...register("password")}
-              type="password"
-              placeholder="Password"
-            />
-            <input
-              className="text-white text-center w-max mx-auto border-2 rounded-lg px-3 py-1.25 bg-gradient-to-r from-slate-900 to-slate-700 transition duration-300 hover:text-black"
-              type="submit"
-              value="Register"
-            />
-          </form>
-        </div>
-      </div>
-      <div className="flex justify-center mt-10">
-        <div className="flex gap-1 border p-6 w-fit rounded shadow-md bg-white">
-          <div>Already have an account?</div>
-          <Link className="text-blue-700 hover:underline " to="/login">
+    <div className="flex justify-center mt-10">
+      <Card className="w-[400px]" shadow="sm" radius="md" withBorder>
+        <h1 className="text-center text-4xl font-semibold mb-6">Create Account</h1>
+
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+          <TextInput
+            label="Username"
+            placeholder="Enter username"
+            {...register("userName")}
+            required
+          />
+
+          <TextInput
+            label="Email"
+            placeholder="Enter email"
+            {...register("email")}
+            required
+          />
+
+          <PasswordInput
+            label="Password"
+            placeholder="Enter password"
+            {...register("password")}
+            required
+          />
+
+          <Button type="submit" radius="md" variant="outline" color="black">
+            Register
+          </Button>
+        </form>
+
+        <div className="flex justify-center mt-4 text-sm">
+          <span>Already have an account?</span>
+          <Link to="/login" className="text-blue-600 ml-1 hover:underline">
             Sign In
           </Link>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };

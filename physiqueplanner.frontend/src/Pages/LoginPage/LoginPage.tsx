@@ -1,62 +1,53 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { LoginUserAPI } from "../../Services/AccountsService";
 import { useAuth } from "../../Context/AuthContext";
 import { Link } from "react-router-dom";
-
-interface Props {}
+import { Button, Card, TextInput, PasswordInput } from "@mantine/core";
 
 interface LoginFormInput {
   userName: string;
   password: string;
 }
 
-const LoginPage = (props: Props) => {
+const LoginPage = () => {
   const { register, handleSubmit } = useForm<LoginFormInput>();
-  const { user, loginUser } = useAuth();
+  const { loginUser } = useAuth();
+
   const onSubmit: SubmitHandler<LoginFormInput> = (data) => {
     loginUser(data.userName, data.password);
   };
 
   return (
-    <div>
-      <div className="flex justify-center mt-10">
-        <div className="border p-6 w-fit rounded shadow-md bg-white">
-          <h1 className="text-center text-5xl font-semibold py-4">
-            Login Page
-          </h1>
-          <form
-            className="flex flex-col gap-3 mb-5"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <input
-              className="border rounded-lg pl-2"
-              {...register("userName")}
-              placeholder="User Name"
-            />
-            <input
-              className="border rounded-lg pl-2"
-              {...register("password")}
-              type="password"
-              placeholder="Password"
-            />
-            <input
-              className="text-white text-center w-25 mx-auto border-2 rounded-lg px-3 py-1.25 bg-gradient-to-r from-slate-900 to-slate-700 transition duration-300 hover:text-black"
-              type="submit"
-              value="Sign In"
-            />
-          </form>
+    <div className="flex justify-center mt-10">
+      <Card className="w-[400px]" shadow="sm" radius="md" withBorder>
+        <h1 className="text-center text-4xl font-semibold mb-6">Sign In</h1>
+
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+          <TextInput
+            label="Username"
+            placeholder="Enter username"
+            {...register("userName")}
+            required
+          />
+
+          <PasswordInput
+            label="Password"
+            placeholder="Enter password"
+            {...register("password")}
+            required
+          />
+
+          <Button type="submit" radius="md" variant="outline" color="black">
+            Sign In
+          </Button>
+        </form>
+
+        <div className="flex justify-center mt-4 text-sm">
+          <span>New to PhysiquePlanner?</span>
+          <Link to="/register" className="text-blue-600 ml-1 hover:underline">
+            Create an account
+          </Link>
         </div>
-      </div>
-      <div className="flex justify-center mt-10">
-      <div className="flex gap-1 border p-6 w-fit rounded shadow-md bg-white">
-        <div>
-          New to PhysiquePlanner?
-        </div>
-        <Link className="text-blue-700 hover:underline " to="/register">
-          Create an account
-        </Link>
-      </div>
-      </div>
+      </Card>
     </div>
   );
 };
